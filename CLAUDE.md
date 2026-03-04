@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Personal portfolio website for seanippolito.com. Single-page static site with a clean, elegant, minimal aesthetic and subtle cosmic/psychedelic personality. No backend.
+Personal portfolio website for seanippolito.com. Single-page static site with an immersive jungle theme — layered SVG parallax scene, fireflies, and hidden game easter egg. No backend.
 
-## Planned Tech Stack
+## Tech Stack
 
 - Vite + React + TypeScript
-- Tailwind CSS
+- Tailwind CSS v4
 - Deployment: Cloudflare Pages or Netlify
 - Game: HTML Canvas in a React component (no external game engine)
 - No analytics, no third-party UI libraries, no heavy animation libraries
@@ -23,31 +23,48 @@ npm run build      # production build
 npm run preview    # preview production build
 ```
 
+## File Structure
+
+```
+src/
+  App.tsx                         # Root — wires scene, content, game teaser, game overlay
+  main.tsx                        # Vite entry point
+  index.css                       # Tailwind directives + keyframe animations
+  components/
+    JungleScene.tsx               # Parallax jungle scene orchestrator
+    CenterContent.tsx             # Name, tagline, social links, resume download
+    GameTeaser.tsx                # Subtle game prompt at bottom of page
+    Game.tsx                      # Tap game overlay (canvas)
+    jungle/
+      BackgroundSky.tsx           # Gradient sky + moon/stars
+      FarTrees.tsx                # Distant tree silhouettes (deepest parallax)
+      MidFoliage.tsx              # Mid-ground foliage
+      Animals.tsx                 # Hidden jungle animals
+      Fireflies.tsx               # Animated floating fireflies
+      ForegroundLeaves.tsx        # Closest leaf framing (strongest parallax)
+  hooks/
+    useMouseParallax.ts           # Mouse-tracking hook for parallax offsets
+  data/
+    links.ts                      # Social/contact link definitions
+public/
+  resume.pdf                      # Placeholder (replace with real PDF)
+```
+
 ## Architecture
 
-Single-page app with anchor-based navigation (#work, #about, #links, #resume, #game). Sections:
-
-1. **Hero** — Name, tagline, CTA buttons (Download Resume, View Work), animated gradient background
-2. **Work** — Grid of project tiles; each opens a modal (problem → approach → outcome)
-3. **About** — Short bio, focus areas, "Now" panel (current projects/learning)
-4. **Links** — Icon buttons: GitHub, Instagram, LinkedIn, business site, email
-5. **Resume** — Highlight bullets + PDF download link. Static `resume.pdf` in `/public`
-6. **Game** — "Orbit Runner" canvas mini-game with localStorage high score
-7. **Footer** — Copyright, last updated, playful one-liner
+Single fullscreen scene. `JungleScene` renders six SVG layers with depth-based mouse parallax via `useMouseParallax`. `CenterContent` sits centered over the scene with name, tagline, social icon links, and a resume download button. `GameTeaser` shows a subtle prompt at the bottom; clicking it opens the `Game` overlay.
 
 ## Design System
 
-- **Typography**: Inter (or similar modern sans), big confident headings, lots of whitespace
-- **Color**: Monochrome base (white/near-black) with one accent gradient (deep violet → electric cyan). Gradient used sparingly: hero underline, hover states, section dividers
-- **Motion**: Micro-interactions only — tile hover lift, smooth scroll, light background grain. Support `prefers-reduced-motion`
-- **Theme**: Light/dark toggle saved in `localStorage` key `seanippolito_theme`
-- **Signature motif**: Constellation-style SVG dividers, subtle starfield behind hero, neon glow hover on link cards
+- **Color palette**: Deep jungle greens (`#0a1f0a` base), emerald highlights, amber/gold accents for fireflies and interactive elements, soft sky gradients
+- **Visual layers** (back to front): sky gradient, far trees, mid foliage, animals, center content, fireflies, foreground leaves
+- **Typography**: Clean sans-serif, white/light text over dark jungle backdrop
+- **Motion**: Mouse parallax on jungle layers, firefly float animations, gentle sway on foliage. Support `prefers-reduced-motion`
 
 ## localStorage Keys
 
 - `seanippolito_highScore` — game high score
-- `seanippolito_theme` — light/dark preference
 
 ## Design Reference
 
-See `CHATGPT.md` in the project root for the full design brief and content structure. Images will be sourced from NanoBanana/Kling later.
+See `CHATGPT.md` in the project root for the full design brief and content structure.
