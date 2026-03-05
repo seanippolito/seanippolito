@@ -1,7 +1,10 @@
 import { useState, useCallback } from "react"
 
+import type { SceneName } from "../data/scenes"
+
 interface GameProps {
   onClose: () => void
+  currentScene?: SceneName
 }
 
 export function Game({ onClose }: GameProps) {

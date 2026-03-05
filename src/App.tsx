@@ -1,12 +1,19 @@
 import { useState, useEffect, useCallback, useRef } from "react"
-import { JungleScene } from "./components/JungleScene"
 import { CenterContent } from "./components/CenterContent"
-import { GameTeaser } from "./components/GameTeaser"
+import { NavigationHub } from "./components/NavigationHub"
+import { SceneTransition } from "./components/SceneTransition"
 import { Game } from "./components/Game"
 import { useAmbientAudio } from "./hooks/useAmbientAudio"
+import { SCENES, getTarget } from "./data/scenes"
+import type { SceneName, Direction } from "./data/scenes"
 
 function App() {
   const [gameActive, setGameActive] = useState(false)
+  const [currentScene, setCurrentScene] = useState<SceneName>("jungle")
+  const [targetScene, setTargetScene] = useState<SceneName | null>(null)
+  const [transitionDirection, setTransitionDirection] = useState<Direction | null>(null)
+  const [transitioning, setTransitioning] = useState(false)
+
   const audio = useAmbientAudio()
 
   // Create AudioContext on first interaction (any gesture)
@@ -48,17 +55,60 @@ function App() {
     [audio.setPan]
   )
 
+  const handleNavigate = useCallback(
+    (direction: Direction) => {
+      if (transitioning) return
+
+      const target = getTarget(currentScene, direction)
+      setTargetScene(target)
+      setTransitionDirection(direction)
+      setTransitioning(true)
+    },
+    [currentScene, transitioning]
+  )
+
+  const handleTransitionComplete = useCallback((scene: SceneName) => {
+    setCurrentScene(scene)
+    setTargetScene(null)
+    setTransitionDirection(null)
+    setTransitioning(false)
+  }, [])
+
+  // Only forward rain/audio callbacks when jungle is active
+  const rainChange = currentScene === "jungle" ? handleRainChange : undefined
+  const mouseXChange = currentScene === "jungle" ? handleMouseXChange : undefined
+
   return (
-    <div className="relative min-h-screen bg-[#0a1f0a]">
-      <JungleScene onRainChange={handleRainChange} onMouseXChange={handleMouseXChange} />
+    <div
+      className="relative min-h-screen transition-colors duration-1000"
+      style={{ backgroundColor: SCENES[currentScene].bgColor }}
+    >
+      <SceneTransition
+        currentScene={currentScene}
+        targetScene={targetScene}
+        direction={transitionDirection}
+        onComplete={handleTransitionComplete}
+        onRainChange={rainChange}
+        onMouseXChange={mouseXChange}
+      />
       <CenterContent
         audioMuted={audio.muted}
         onToggleAudio={audio.toggleMute}
       />
       {!gameActive && (
-        <GameTeaser onActivate={() => setGameActive(true)} />
+        <NavigationHub
+          currentScene={currentScene}
+          onNavigate={handleNavigate}
+          onActivateGame={() => setGameActive(true)}
+          disabled={transitioning}
+        />
       )}
-      {gameActive && <Game onClose={() => setGameActive(false)} />}
+      {gameActive && (
+        <Game
+          onClose={() => setGameActive(false)}
+          currentScene={currentScene}
+        />
+      )}
     </div>
   )
 }

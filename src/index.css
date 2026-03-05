@@ -218,3 +218,9 @@
   animation: monkey-swing 0.7s ease-out;
   transform-origin: top center;
 }
+
+/* Navigation hub arrow pulse */
+@keyframes nav-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
+}
