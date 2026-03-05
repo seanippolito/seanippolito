@@ -1,5 +1,4 @@
 export function Fireflies() {
-  // Fireflies — more of them, varied sizes and behaviors
   const fireflies = [
     { x: 25, y: 35, delay: 0, duration: 5, size: 2 },
     { x: 72, y: 55, delay: 1.2, duration: 6, size: 2.5 },
@@ -19,7 +18,6 @@ export function Fireflies() {
     { x: 60, y: 82, delay: 1.5, duration: 6.5, size: 2 },
   ]
 
-  // Floating pollen/spores — very subtle upward drift
   const spores = [
     { x: 35, y: 90, delay: 0, duration: 14, driftX: 20, driftX2: -15 },
     { x: 60, y: 85, delay: 3, duration: 16, driftX: -15, driftX2: 10 },
@@ -33,24 +31,49 @@ export function Fireflies() {
     { x: 40, y: 88, delay: 2, duration: 13, driftX: 12, driftX2: -18 },
   ]
 
+  // Glow radius scales with firefly size
+  const glowRadius = (size: number) => size * 12
+
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {/* Fireflies */}
+      {/* Fireflies with ambient glow */}
       {fireflies.map((fly, i) => (
         <div
           key={`fly-${i}`}
-          className="absolute rounded-full animate-firefly"
+          className="absolute animate-firefly"
           style={{
             left: `${fly.x}%`,
             top: `${fly.y}%`,
-            width: `${fly.size}px`,
-            height: `${fly.size}px`,
+            width: `${glowRadius(fly.size) * 2}px`,
+            height: `${glowRadius(fly.size) * 2}px`,
+            marginLeft: `-${glowRadius(fly.size)}px`,
+            marginTop: `-${glowRadius(fly.size)}px`,
             animationDelay: `${fly.delay}s`,
             animationDuration: `${fly.duration}s`,
-            background: `radial-gradient(circle, rgba(220, 200, 80, 0.9) 0%, rgba(180, 160, 40, 0.4) 50%, transparent 100%)`,
-            boxShadow: `0 0 ${fly.size * 3}px ${fly.size}px rgba(200, 180, 60, 0.3)`,
           }}
-        />
+        >
+          {/* Ambient illumination — soft wide glow that lights surroundings */}
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: `radial-gradient(circle, rgba(200, 190, 60, 0.12) 0%, rgba(180, 170, 40, 0.06) 35%, transparent 70%)`,
+            }}
+          />
+          {/* Core bright glow */}
+          <div
+            className="absolute rounded-full"
+            style={{
+              left: "50%",
+              top: "50%",
+              width: `${fly.size * 3}px`,
+              height: `${fly.size * 3}px`,
+              marginLeft: `-${fly.size * 1.5}px`,
+              marginTop: `-${fly.size * 1.5}px`,
+              background: `radial-gradient(circle, rgba(255, 240, 100, 1) 0%, rgba(220, 200, 60, 0.8) 40%, rgba(180, 160, 40, 0.3) 70%, transparent 100%)`,
+              boxShadow: `0 0 ${fly.size * 6}px ${fly.size * 2}px rgba(220, 200, 60, 0.5), 0 0 ${fly.size * 12}px ${fly.size * 4}px rgba(200, 180, 40, 0.15)`,
+            }}
+          />
+        </div>
       ))}
 
       {/* Floating spores/pollen */}
