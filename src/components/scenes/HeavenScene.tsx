@@ -9,6 +9,12 @@ import { DivineVignette } from "./DivineVignette"
 import { CursorDivineGlow } from "./CursorDivineGlow"
 import { HeavenEasterEggs } from "./HeavenEasterEggs"
 import { OlympianStatues } from "./OlympianStatues"
+import { CelestialConstellations } from "./CelestialConstellations"
+import { TempleBraziers } from "./TempleBraziers"
+import { FallingPetals } from "./FallingPetals"
+import { DoveFlock } from "./DoveFlock"
+import { RainbowBridge } from "./RainbowBridge"
+import { FloatingIslands } from "./FloatingIslands"
 
 interface HeavenSceneProps {
   onRainChange?: (intensity: number) => void
@@ -262,6 +268,12 @@ export const HeavenScene = memo(function HeavenScene(props: HeavenSceneProps) {
         </svg>
       </div>
 
+      {/* Celestial constellations in the upper sky */}
+      <CelestialConstellations />
+
+      {/* Faint rainbow arc between cloud banks */}
+      <RainbowBridge />
+
       {/* Animated god-rays overlay */}
       <GodRays />
 
@@ -271,14 +283,26 @@ export const HeavenScene = memo(function HeavenScene(props: HeavenSceneProps) {
       {/* Drifting clouds across the scene */}
       <CloudDrift />
 
+      {/* Floating cloud islands with miniature structures */}
+      <FloatingIslands />
+
       {/* Soaring eagles */}
       <OlympusEagles />
+
+      {/* Occasional dove flocks in V-formation */}
+      <DoveFlock />
 
       {/* Vibrant CSS god statues */}
       <OlympianStatues />
 
+      {/* Flickering golden braziers flanking the temple */}
+      <TempleBraziers />
+
       {/* Hidden mythological easter eggs */}
       <HeavenEasterEggs />
+
+      {/* Falling flower petals */}
+      <FallingPetals />
 
       {/* Rising golden sparkle particles */}
       <GoldenMotes />
