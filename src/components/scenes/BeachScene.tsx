@@ -10,6 +10,8 @@ import { BeachEasterEggs } from "./BeachEasterEggs"
 import { CoralGlow } from "./CoralGlow"
 import { CursorFish } from "./CursorFish"
 import { SunbeamVignette } from "./SunbeamVignette"
+import { TropicalClouds } from "./TropicalClouds"
+import { SunShimmer } from "./SunShimmer"
 
 interface BeachSceneProps {
   onRainChange?: (intensity: number) => void
@@ -171,7 +173,7 @@ export const BeachScene = memo(function BeachScene({ onMouseXChange }: BeachScen
             <ellipse cx="15" cy="-10" rx="6" ry="3" fill="rgba(13,148,136,0.4)" transform="rotate(20 15 -10)" />
           </g>
 
-          <g opacity="0.25" transform="translate(1100, 545) scale(0.6) scaleX(-1)">
+          <g opacity="0.25" transform="translate(1100, 545) scale(-0.6, 0.6)">
             <ellipse cx="0" cy="0" rx="20" ry="14" fill="rgba(13,148,136,0.6)" />
             <circle cx="-22" cy="-2" r="5" fill="rgba(13,148,136,0.5)" />
             <ellipse cx="-15" cy="12" rx="7" ry="3" fill="rgba(13,148,136,0.4)" transform="rotate(30 -15 12)" />
@@ -239,79 +241,95 @@ export const BeachScene = memo(function BeachScene({ onMouseXChange }: BeachScen
           className="absolute inset-0 h-full w-full"
           preserveAspectRatio="xMidYMid slice"
         >
-          {/* Large palm tree — left */}
-          <g>
-            {/* Trunk — curved */}
-            <path
-              d="M220 850 Q200 700 230 550 Q245 450 260 380"
-              fill="none" stroke="rgba(120,80,40,0.7)" strokeWidth="16" strokeLinecap="round"
-            />
-            <path
-              d="M220 850 Q200 700 230 550 Q245 450 260 380"
-              fill="none" stroke="rgba(140,95,50,0.4)" strokeWidth="10" strokeLinecap="round"
-            />
-            {/* Coconuts */}
-            <circle cx="255" cy="390" r="8" fill="rgba(120,80,40,0.6)" />
-            <circle cx="268" cy="385" r="7" fill="rgba(110,70,35,0.55)" />
-            <circle cx="248" cy="380" r="6" fill="rgba(130,85,45,0.5)" />
-            {/* Fronds */}
-            <ellipse cx="180" cy="350" rx="120" ry="25" fill="rgba(34,139,34,0.45)" transform="rotate(-30 180 350)" />
-            <ellipse cx="340" cy="340" rx="110" ry="22" fill="rgba(34,139,34,0.4)" transform="rotate(25 340 340)" />
-            <ellipse cx="200" cy="330" rx="100" ry="20" fill="rgba(22,101,52,0.4)" transform="rotate(-50 200 330)" />
-            <ellipse cx="310" cy="360" rx="95" ry="18" fill="rgba(22,101,52,0.35)" transform="rotate(40 310 360)" />
-            <ellipse cx="260" cy="320" rx="90" ry="18" fill="rgba(34,139,34,0.35)" transform="rotate(-10 260 320)" />
-          </g>
-
-          {/* Large palm tree — right */}
-          <g>
-            <path
-              d="M1700 880 Q1720 720 1690 560 Q1675 460 1660 400"
-              fill="none" stroke="rgba(120,80,40,0.65)" strokeWidth="14" strokeLinecap="round"
-            />
-            <path
-              d="M1700 880 Q1720 720 1690 560 Q1675 460 1660 400"
-              fill="none" stroke="rgba(140,95,50,0.35)" strokeWidth="9" strokeLinecap="round"
-            />
-            <circle cx="1655" cy="410" r="7" fill="rgba(120,80,40,0.55)" />
-            <circle cx="1668" cy="405" r="6" fill="rgba(110,70,35,0.5)" />
-            <ellipse cx="1580" cy="370" rx="110" ry="24" fill="rgba(34,139,34,0.4)" transform="rotate(-25 1580 370)" />
-            <ellipse cx="1740" cy="360" rx="100" ry="22" fill="rgba(34,139,34,0.35)" transform="rotate(30 1740 360)" />
-            <ellipse cx="1610" cy="350" rx="95" ry="20" fill="rgba(22,101,52,0.35)" transform="rotate(-45 1610 350)" />
-            <ellipse cx="1720" cy="380" rx="90" ry="18" fill="rgba(22,101,52,0.3)" transform="rotate(45 1720 380)" />
-            <ellipse cx="1660" cy="340" rx="85" ry="17" fill="rgba(34,139,34,0.3)" transform="rotate(-5 1660 340)" />
-          </g>
-
-          {/* Beach umbrella / tiki hut silhouette */}
-          <g opacity="0.4" transform="translate(900, 720)">
+          {/* Tiki hut — boosted visibility */}
+          <g opacity="0.65" transform="translate(900, 700)">
             {/* Pole */}
-            <rect x="-3" y="-80" width="6" height="120" fill="rgba(120,80,40,0.6)" />
-            {/* Thatch roof */}
+            <rect x="-4" y="-90" width="8" height="140" fill="rgba(100,65,30,0.8)" />
+            {/* Thatch roof — layered */}
             <path
-              d="M-60 -80 Q-30 -110 0 -95 Q30 -110 60 -80 L50 -70 Q25 -85 0 -75 Q-25 -85 -50 -70Z"
-              fill="rgba(160,120,74,0.5)"
+              d="M-80 -90 Q-40 -125 0 -108 Q40 -125 80 -90 L70 -78 Q35 -100 0 -88 Q-35 -100 -70 -78Z"
+              fill="rgba(180,140,80,0.7)"
             />
             <path
-              d="M-55 -75 L55 -75 L45 -65 L-45 -65Z"
-              fill="rgba(140,100,55,0.4)"
+              d="M-75 -82 L75 -82 L60 -70 L-60 -70Z"
+              fill="rgba(160,120,60,0.6)"
+            />
+            <path
+              d="M-70 -72 L70 -72 L55 -62 L-55 -62Z"
+              fill="rgba(140,100,45,0.5)"
             />
           </g>
 
-          {/* Scattered shells and starfish */}
-          {/* Starfish 1 */}
-          <g transform="translate(500, 820)" opacity="0.4">
-            <path d="M0 -8 L2 -2 L8 -2 L3 2 L5 8 L0 4 L-5 8 L-3 2 L-8 -2 L-2 -2Z" fill="rgba(251,146,60,0.6)" />
+          {/* Beach chair — left of center */}
+          <g opacity="0.5" transform="translate(600, 770)">
+            {/* Frame */}
+            <line x1="-20" y1="0" x2="-15" y2="50" stroke="rgba(100,65,30,0.7)" strokeWidth="3" />
+            <line x1="30" y1="-10" x2="35" y2="50" stroke="rgba(100,65,30,0.7)" strokeWidth="3" />
+            <line x1="-20" y1="0" x2="30" y2="-10" stroke="rgba(100,65,30,0.6)" strokeWidth="2" />
+            {/* Backrest */}
+            <line x1="30" y1="-10" x2="45" y2="-40" stroke="rgba(100,65,30,0.7)" strokeWidth="3" />
+            {/* Canvas */}
+            <path d="M-18 2 L32 -8 L47 -38 L42 -38Z" fill="rgba(220,80,60,0.35)" />
           </g>
-          {/* Starfish 2 */}
-          <g transform="translate(1300, 850) rotate(30)" opacity="0.35">
-            <path d="M0 -7 L2 -2 L7 -2 L3 1 L4 7 L0 3 L-4 7 L-3 1 L-7 -2 L-2 -2Z" fill="rgba(244,114,182,0.5)" />
+
+          {/* Beach chair — right side */}
+          <g opacity="0.45" transform="translate(1350, 785)">
+            <line x1="-18" y1="0" x2="-13" y2="45" stroke="rgba(100,65,30,0.6)" strokeWidth="2.5" />
+            <line x1="25" y1="-8" x2="30" y2="45" stroke="rgba(100,65,30,0.6)" strokeWidth="2.5" />
+            <line x1="-18" y1="0" x2="25" y2="-8" stroke="rgba(100,65,30,0.5)" strokeWidth="2" />
+            <line x1="25" y1="-8" x2="38" y2="-35" stroke="rgba(100,65,30,0.6)" strokeWidth="2.5" />
+            <path d="M-16 2 L27 -6 L40 -33 L35 -33Z" fill="rgba(60,120,200,0.3)" />
           </g>
-          {/* Shell 1 */}
-          <ellipse cx="650" cy="840" rx="6" ry="4" fill="rgba(255,240,220,0.4)" />
-          <path d="M644 840 Q650 835 656 840" fill="none" stroke="rgba(200,180,160,0.3)" strokeWidth="1" />
-          {/* Shell 2 */}
-          <ellipse cx="1100" cy="830" rx="5" ry="3.5" fill="rgba(255,230,210,0.35)" />
+
+          {/* Scattered shells and starfish — larger and more visible */}
+          {/* Starfish 1 — orange */}
+          <g transform="translate(480, 830) scale(2.5)" opacity="0.55">
+            <path d="M0 -8 L2 -2 L8 -2 L3 2 L5 8 L0 4 L-5 8 L-3 2 L-8 -2 L-2 -2Z" fill="rgba(251,146,60,0.7)" />
+          </g>
+          {/* Starfish 2 — pink */}
+          <g transform="translate(1280, 860) rotate(30) scale(2)" opacity="0.5">
+            <path d="M0 -7 L2 -2 L7 -2 L3 1 L4 7 L0 3 L-4 7 L-3 1 L-7 -2 L-2 -2Z" fill="rgba(244,114,182,0.6)" />
+          </g>
+          {/* Starfish 3 — smaller, mid */}
+          <g transform="translate(960, 900) rotate(-15) scale(1.8)" opacity="0.4">
+            <path d="M0 -7 L2 -2 L7 -2 L3 1 L4 7 L0 3 L-4 7 L-3 1 L-7 -2 L-2 -2Z" fill="rgba(251,146,60,0.5)" />
+          </g>
+          {/* Shell 1 — conch */}
+          <g transform="translate(650, 850)" opacity="0.5">
+            <ellipse cx="0" cy="0" rx="12" ry="8" fill="rgba(255,230,200,0.6)" />
+            <path d="M-10 0 Q-5 -6 0 -4 Q5 -6 10 0" fill="none" stroke="rgba(200,170,140,0.5)" strokeWidth="1.5" />
+            <path d="M-8 2 Q-3 -3 2 -1 Q7 -3 8 2" fill="none" stroke="rgba(200,170,140,0.3)" strokeWidth="1" />
+          </g>
+          {/* Shell 2 — scallop */}
+          <g transform="translate(1100, 840)" opacity="0.45">
+            <ellipse cx="0" cy="0" rx="10" ry="7" fill="rgba(255,220,200,0.55)" />
+            <line x1="0" y1="-6" x2="-6" y2="4" stroke="rgba(200,170,140,0.3)" strokeWidth="0.8" />
+            <line x1="0" y1="-6" x2="0" y2="5" stroke="rgba(200,170,140,0.3)" strokeWidth="0.8" />
+            <line x1="0" y1="-6" x2="6" y2="4" stroke="rgba(200,170,140,0.3)" strokeWidth="0.8" />
+          </g>
           {/* Shell 3 */}
-          <ellipse cx="820" cy="860" rx="4" ry="3" fill="rgba(255,235,215,0.3)" />
+          <ellipse cx="820" cy="870" rx="8" ry="5" fill="rgba(255,235,215,0.45)" />
+
+          {/* Footprints in the sand */}
+          <g opacity="0.15">
+            <ellipse cx="700" cy="890" rx="5" ry="8" fill="rgba(160,120,80,0.5)" transform="rotate(-10 700 890)" />
+            <ellipse cx="715" cy="880" rx="5" ry="8" fill="rgba(160,120,80,0.5)" transform="rotate(10 715 880)" />
+            <ellipse cx="735" cy="905" rx="5" ry="8" fill="rgba(160,120,80,0.45)" transform="rotate(-10 735 905)" />
+            <ellipse cx="750" cy="895" rx="5" ry="8" fill="rgba(160,120,80,0.45)" transform="rotate(10 750 895)" />
+            <ellipse cx="770" cy="918" rx="5" ry="8" fill="rgba(160,120,80,0.4)" transform="rotate(-5 770 918)" />
+            <ellipse cx="785" cy="910" rx="5" ry="8" fill="rgba(160,120,80,0.4)" transform="rotate(5 785 910)" />
+          </g>
+
+          {/* Beach grass tufts */}
+          <g opacity="0.35">
+            <path d="M350 810 Q345 780 340 760" fill="none" stroke="rgba(100,140,60,0.5)" strokeWidth="1.5" />
+            <path d="M355 810 Q360 775 365 755" fill="none" stroke="rgba(80,130,50,0.45)" strokeWidth="1.5" />
+            <path d="M348 810 Q340 785 330 770" fill="none" stroke="rgba(90,135,55,0.4)" strokeWidth="1" />
+
+            <path d="M1550 820 Q1545 790 1540 775" fill="none" stroke="rgba(100,140,60,0.45)" strokeWidth="1.5" />
+            <path d="M1555 820 Q1560 785 1565 770" fill="none" stroke="rgba(80,130,50,0.4)" strokeWidth="1.5" />
+            <path d="M1548 820 Q1540 795 1535 780" fill="none" stroke="rgba(90,135,55,0.35)" strokeWidth="1" />
+          </g>
 
           {/* Tide pools near shore */}
           <ellipse cx="400" cy="780" rx="35" ry="12" fill="rgba(45,212,191,0.15)" />
@@ -331,6 +349,8 @@ export const BeachScene = memo(function BeachScene({ onMouseXChange }: BeachScen
       </div>
 
       {/* Animated components — layered from background to foreground */}
+      <TropicalClouds />
+      <SunShimmer />
       <OceanWaves />
       <CoralGlow />
       <FloatingJellyfish />
