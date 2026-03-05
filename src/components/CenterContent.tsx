@@ -7,23 +7,30 @@ interface CenterContentProps {
 
 export function CenterContent({ audioMuted, onToggleAudio }: CenterContentProps) {
   return (
-    <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
-      <h1 className="font-display text-glow mb-4 text-6xl font-light tracking-wide text-white/95 md:text-8xl">
+    <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 pb-40 text-center sm:px-6 sm:pb-0">
+      <h1
+        className="font-display text-glow mb-4 text-5xl font-light tracking-wide text-white/95 sm:text-6xl md:text-8xl"
+        style={{ textShadow: "0 2px 12px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3)" }}
+      >
         Sean Ippolito
       </h1>
-      <p className="text-glow mb-12 text-base font-light tracking-widest text-white/50 uppercase md:text-lg">
+      <p
+        className="text-glow mb-8 text-sm font-light tracking-widest text-white/60 uppercase sm:mb-12 sm:text-base md:text-lg"
+        style={{ textShadow: "0 1px 8px rgba(0,0,0,0.5)" }}
+      >
         I build elegant software and playful experiences
       </p>
 
       {/* Social links */}
-      <div className="mb-10 flex flex-wrap justify-center gap-8">
+      <div className="mb-6 flex flex-wrap justify-center gap-4 sm:mb-10 sm:gap-8">
         {socialLinks.map((link) => (
           <a
             key={link.label}
             href={link.url}
             target={link.url.startsWith("mailto:") ? undefined : "_blank"}
             rel="noopener noreferrer"
-            className="text-glow-hover group flex items-center gap-2.5 text-white/60 transition-all duration-500 hover:text-amber-200/90"
+            className="text-glow-hover group flex items-center gap-2 text-white/60 transition-all duration-500 hover:text-amber-200/90 sm:gap-2.5"
+            style={{ textShadow: "0 1px 6px rgba(0,0,0,0.4)" }}
             aria-label={link.label}
           >
             <svg

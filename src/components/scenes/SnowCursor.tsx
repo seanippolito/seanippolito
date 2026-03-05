@@ -1,4 +1,5 @@
 import { memo, useRef, useEffect, useState } from "react"
+import { useIsMobile } from "../../hooks/useIsMobile"
 
 /**
  * SnowCursor — replaces the default cursor with a snowball SVG
@@ -38,6 +39,7 @@ function createParticle(): Particle {
 }
 
 export const SnowCursor = memo(function SnowCursor() {
+  const isMobile = useIsMobile()
   const mouseRef = useRef({ x: -100, y: -100, prevX: -100, prevY: -100 })
   const poolRef = useRef<Particle[]>(Array.from({ length: POOL_SIZE }, createParticle))
   const spawnIndexRef = useRef(0)
@@ -155,6 +157,8 @@ export const SnowCursor = memo(function SnowCursor() {
 
   const m = mouseRef.current
   const pool = poolRef.current
+
+  if (isMobile) return null
 
   return (
     <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">

@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react"
+import { useIsMobile } from "../../hooks/useIsMobile"
 
 interface Spark {
   x: number
@@ -33,6 +34,7 @@ function initSparks(): Spark[] {
 }
 
 export function CursorDivineGlow() {
+  const isMobile = useIsMobile()
   const sparksRef = useRef<Spark[]>(initSparks())
   const mouseRef = useRef({ x: 0, y: 0, prevX: 0, prevY: 0 })
   const rafRef = useRef(0)
@@ -113,6 +115,8 @@ export function CursorDivineGlow() {
       cancelAnimationFrame(rafRef.current)
     }
   }, [])
+
+  if (isMobile) return null
 
   return (
     <div className="pointer-events-none absolute inset-0 z-30">

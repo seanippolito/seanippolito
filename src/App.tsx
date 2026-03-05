@@ -126,6 +126,47 @@ function App() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [gameActive, handleNavigate])
 
+  // Touch swipe navigation
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null)
+  useEffect(() => {
+    if (gameActive) return
+
+    const SWIPE_THRESHOLD = 50
+
+    const handleTouchStart = (e: TouchEvent) => {
+      const t = e.touches[0]
+      if (t) touchStartRef.current = { x: t.clientX, y: t.clientY }
+    }
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (!touchStartRef.current) return
+      const t = e.changedTouches[0]
+      if (!t) return
+
+      const dx = t.clientX - touchStartRef.current.x
+      const dy = t.clientY - touchStartRef.current.y
+      touchStartRef.current = null
+
+      const absDx = Math.abs(dx)
+      const absDy = Math.abs(dy)
+
+      if (absDx < SWIPE_THRESHOLD && absDy < SWIPE_THRESHOLD) return
+
+      if (absDx > absDy) {
+        handleNavigate(dx > 0 ? "west" : "east")
+      } else {
+        handleNavigate(dy > 0 ? "south" : "north")
+      }
+    }
+
+    window.addEventListener("touchstart", handleTouchStart, { passive: true })
+    window.addEventListener("touchend", handleTouchEnd, { passive: true })
+    return () => {
+      window.removeEventListener("touchstart", handleTouchStart)
+      window.removeEventListener("touchend", handleTouchEnd)
+    }
+  }, [gameActive, handleNavigate])
+
   // Only forward rain callback when jungle is active; mouse panning works for all scenes with audio
   const rainChange = currentScene === "jungle" ? handleRainChange : undefined
   const mouseXChange = (currentScene === "jungle" || currentScene === "volcano" || currentScene === "heaven" || currentScene === "beach" || currentScene === "snow") ? handleMouseXChange : undefined

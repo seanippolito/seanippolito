@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react"
+import { useIsMobile } from "../../hooks/useIsMobile"
 
 const COUNT = 10
 const ORBIT_RADIUS = 50
@@ -14,6 +15,7 @@ function initSwarm(): BatState[] {
 }
 
 export function CursorBat() {
+  const isMobile = useIsMobile()
   const swarmRef = useRef<BatState[]>(initSwarm())
   const targetRef = useRef({ x: -100, y: -100 })
   const rafRef = useRef(0)
@@ -79,6 +81,8 @@ export function CursorBat() {
   const cs = cursorSmoothRef.current
   cs.x += (cursor.x - cs.x) * 0.3
   cs.y += (cursor.y - cs.y) * 0.3
+
+  if (isMobile) return null
 
   return (
     <div className="pointer-events-none fixed inset-0 z-50">

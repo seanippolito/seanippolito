@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react"
+import { useIsMobile } from "../../hooks/useIsMobile"
 
 const COUNT = 10
 const ORBIT_RADIUS = 40
@@ -13,6 +14,7 @@ function initSwarm(): FireflyState[] {
 }
 
 export function CursorFirefly() {
+  const isMobile = useIsMobile()
   const swarmRef = useRef<FireflyState[]>(initSwarm())
   const targetRef = useRef({ x: -100, y: -100 })
   const rafRef = useRef(0)
@@ -78,6 +80,8 @@ export function CursorFirefly() {
       cancelAnimationFrame(rafRef.current)
     }
   }, [])
+
+  if (isMobile) return null
 
   return (
     <div className="pointer-events-none fixed inset-0 z-50">

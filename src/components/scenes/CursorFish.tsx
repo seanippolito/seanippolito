@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react"
+import { useIsMobile } from "../../hooks/useIsMobile"
 
 const COUNT = 10
 const ORBIT_RADIUS = 45
@@ -15,6 +16,7 @@ function initSwarm(): FishState[] {
 }
 
 export function CursorFish() {
+  const isMobile = useIsMobile()
   const swarmRef = useRef<FishState[]>(initSwarm())
   const targetRef = useRef({ x: -100, y: -100 })
   const rafRef = useRef(0)
@@ -80,6 +82,8 @@ export function CursorFish() {
       cancelAnimationFrame(rafRef.current)
     }
   }, [])
+
+  if (isMobile) return null
 
   return (
     <div className="pointer-events-none fixed inset-0 z-50">

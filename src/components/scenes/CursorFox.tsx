@@ -1,4 +1,5 @@
 import { memo, useRef, useEffect, useState } from "react"
+import { useIsMobile } from "../../hooks/useIsMobile"
 
 interface FoxState {
   x: number
@@ -151,6 +152,7 @@ function FoxSitting({ size, facingRight }: { size: number; facingRight: boolean 
 }
 
 export const CursorFox = memo(function CursorFox() {
+  const isMobile = useIsMobile()
   const prefersReducedMotion =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -257,6 +259,7 @@ export const CursorFox = memo(function CursorFox() {
     }
   }, [prefersReducedMotion])
 
+  if (isMobile) return null
   if (prefersReducedMotion) return null
 
   const FOX_SIZE = 28

@@ -92,14 +92,14 @@ export function NavigationHub({
   const labels = getDirectionLabels(currentScene)
 
   return (
-    <div className="fixed bottom-10 left-1/2 z-20 -translate-x-1/2">
+    <div className="fixed bottom-6 left-1/2 z-40 -translate-x-1/2 sm:bottom-10">
       {/* 3x3 grid: arrows in cross pattern, game button in center */}
       <div
         className="grid place-items-center"
         style={{
-          gridTemplateColumns: "28px 28px 28px",
-          gridTemplateRows: "28px 28px 28px",
-          gap: "4px",
+          gridTemplateColumns: "40px 40px 40px",
+          gridTemplateRows: "40px 40px 40px",
+          gap: "2px",
         }}
       >
         {/* Row 1: _ N _ */}
