@@ -4,32 +4,83 @@
   body {
     margin: 0;
     overflow: hidden;
-    background: #0a1f0a;
+    background: #040e04;
+    font-family: 'Outfit', sans-serif;
   }
 }
 
 @layer utilities {
   .text-glow {
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3),
-                 0 0 40px rgba(255, 255, 255, 0.1);
+    text-shadow:
+      0 0 30px rgba(255, 255, 255, 0.25),
+      0 0 60px rgba(180, 220, 140, 0.12),
+      0 2px 4px rgba(0, 0, 0, 0.8);
   }
 
   .text-glow-hover:hover {
-    text-shadow: 0 0 20px rgba(212, 160, 48, 0.5),
-                 0 0 40px rgba(212, 160, 48, 0.2);
+    text-shadow:
+      0 0 25px rgba(212, 180, 80, 0.5),
+      0 0 50px rgba(212, 180, 80, 0.2),
+      0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+
+  .font-display {
+    font-family: 'Cormorant Garamond', serif;
   }
 }
 
+/* Firefly animation — organic drift path */
 @keyframes firefly {
-  0%, 100% { opacity: 0.2; transform: translate(0, 0); }
-  25% { opacity: 0.8; transform: translate(5px, -8px); }
-  50% { opacity: 0.4; transform: translate(-3px, -15px); }
-  75% { opacity: 0.9; transform: translate(8px, -5px); }
+  0%   { opacity: 0;   transform: translate(0, 0) scale(0.5); }
+  10%  { opacity: 0.9; transform: translate(3px, -6px) scale(1); }
+  30%  { opacity: 0.4; transform: translate(-5px, -14px) scale(0.8); }
+  50%  { opacity: 1;   transform: translate(8px, -8px) scale(1.1); }
+  70%  { opacity: 0.3; transform: translate(2px, -18px) scale(0.7); }
+  90%  { opacity: 0.8; transform: translate(-4px, -10px) scale(1); }
+  100% { opacity: 0;   transform: translate(0, -22px) scale(0.5); }
 }
 
+/* Gentle sway for foliage */
 @keyframes sway {
+  0%, 100% { transform: rotate(0deg) translateX(0); }
+  25%      { transform: rotate(0.8deg) translateX(2px); }
+  75%      { transform: rotate(-0.6deg) translateX(-1.5px); }
+}
+
+/* Slower counter-sway for variety */
+@keyframes sway-alt {
+  0%, 100% { transform: rotate(0deg) translateX(0); }
+  33%      { transform: rotate(-1deg) translateX(-2px); }
+  66%      { transform: rotate(0.5deg) translateX(1px); }
+}
+
+/* Floating pollen/spore drift */
+@keyframes float-up {
+  0%   { opacity: 0; transform: translate(0, 0) scale(0.3); }
+  15%  { opacity: 0.6; }
+  50%  { opacity: 0.4; transform: translate(var(--drift-x, 15px), -40vh) scale(0.8); }
+  85%  { opacity: 0.2; }
+  100% { opacity: 0; transform: translate(var(--drift-x2, -10px), -80vh) scale(0.4); }
+}
+
+/* God ray pulse */
+@keyframes ray-pulse {
+  0%, 100% { opacity: var(--ray-min, 0.03); }
+  50%      { opacity: var(--ray-max, 0.08); }
+}
+
+/* Mist drift */
+@keyframes mist-drift {
+  0%   { transform: translateX(0) scaleX(1); opacity: var(--mist-opacity, 0.15); }
+  50%  { transform: translateX(var(--mist-dx, 30px)) scaleX(1.05); opacity: calc(var(--mist-opacity, 0.15) * 0.7); }
+  100% { transform: translateX(0) scaleX(1); opacity: var(--mist-opacity, 0.15); }
+}
+
+/* Vine dangle */
+@keyframes vine-sway {
   0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(2deg); }
+  30%      { transform: rotate(1.2deg); }
+  70%      { transform: rotate(-0.8deg); }
 }
 
 .animate-firefly {
@@ -37,6 +88,28 @@
 }
 
 .animate-sway {
-  animation: sway 6s ease-in-out infinite;
+  animation: sway 8s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+.animate-sway-alt {
+  animation: sway-alt 10s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+.animate-float {
+  animation: float-up var(--duration, 12s) ease-out infinite;
+}
+
+.animate-ray {
+  animation: ray-pulse var(--duration, 8s) ease-in-out infinite;
+}
+
+.animate-mist {
+  animation: mist-drift var(--duration, 20s) ease-in-out infinite;
+}
+
+.animate-vine {
+  animation: vine-sway var(--duration, 7s) ease-in-out infinite;
   transform-origin: top center;
 }
