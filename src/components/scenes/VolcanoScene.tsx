@@ -1,16 +1,27 @@
-import { memo } from "react"
+import { memo, useEffect, useRef } from "react"
 import { useMouseParallax, getLayerTransform } from "../../hooks/useMouseParallax"
 import { EmberTrail } from "./EmberTrail"
 import { HeatHaze } from "./HeatHaze"
 import { CursorBat } from "./CursorBat"
+import { VolcanoBoulders } from "./VolcanoBoulders"
 
 interface VolcanoSceneProps {
   onRainChange?: (intensity: number) => void
   onMouseXChange?: (x: number) => void
 }
 
-export const VolcanoScene = memo(function VolcanoScene(_props: VolcanoSceneProps) {
+export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: VolcanoSceneProps) {
   const offset = useMouseParallax({ strength: 25, smoothing: 0.06 })
+
+  // Report mouse X for audio panning
+  const prevMouseXRef = useRef(0)
+  useEffect(() => {
+    const normalized = offset.x / 25
+    if (Math.abs(normalized - prevMouseXRef.current) > 0.01) {
+      prevMouseXRef.current = normalized
+      onMouseXChange?.(normalized)
+    }
+  }, [offset.x, onMouseXChange])
 
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden">
@@ -440,6 +451,9 @@ export const VolcanoScene = memo(function VolcanoScene(_props: VolcanoSceneProps
           </g>
         </svg>
       </div>
+
+      {/* Boulders erupting from volcano peak */}
+      <VolcanoBoulders />
 
       {/* Heat haze / smoke wisps rising from lava */}
       <HeatHaze />

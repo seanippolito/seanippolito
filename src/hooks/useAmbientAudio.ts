@@ -5,6 +5,7 @@ interface AmbientAudioControls {
   muted: boolean
   start: () => void
   toggleMute: () => void
+  setMasterVolume: (vol: number) => void
   setRainIntensity: (intensity: number) => void
   setPan: (x: number) => void
 }
@@ -274,13 +275,14 @@ export function useAmbientAudio(): AmbientAudioControls {
   }, [])
 
   const toggleMute = useCallback(() => {
+    setMuted((prev) => !prev)
+  }, [])
+
+  const setMasterVolume = useCallback((vol: number) => {
     const master = masterGainRef.current
-    if (!master) return
-    setMuted((prev) => {
-      const next = !prev
-      master.gain.linearRampToValueAtTime(next ? 0 : 0.15, (ctxRef.current?.currentTime ?? 0) + 0.1)
-      return next
-    })
+    const ctx = ctxRef.current
+    if (!master || !ctx) return
+    master.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.3)
   }, [])
 
   const setRainIntensity = useCallback((intensity: number) => {
@@ -307,5 +309,5 @@ export function useAmbientAudio(): AmbientAudioControls {
     }
   }, [])
 
-  return { started, muted, start, toggleMute, setRainIntensity, setPan }
+  return { started, muted, start, toggleMute, setMasterVolume, setRainIntensity, setPan }
 }
