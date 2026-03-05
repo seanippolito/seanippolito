@@ -10,6 +10,11 @@ import { SmokePlume } from "./SmokePlume"
 import { ScreenTremor } from "./ScreenTremor"
 import { VolcanoEasterEggs } from "./VolcanoEasterEggs"
 import { TorchVignette } from "./TorchVignette"
+import { CinderFountains } from "./CinderFountains"
+import { HorizonGlow } from "./HorizonGlow"
+import { Ravens } from "./Ravens"
+import { HangingChains } from "./HangingChains"
+import { VolcanoSigil } from "./VolcanoSigil"
 
 interface VolcanoSceneProps {
   onRainChange?: (intensity: number) => void
@@ -39,6 +44,9 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
             "radial-gradient(ellipse at 50% 40%, #7f1d1d 0%, #450a0a 40%, #1a0505 70%, #0a0000 100%)",
         }}
       />
+
+      {/* Distant red horizon glow — pulsing lava beyond the visible area */}
+      <HorizonGlow />
 
       {/* Layer 1: Distant mountain range + eruption glow (depth: 0.08) */}
       <div
@@ -340,9 +348,21 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
 
           {/* === Lava pools === */}
           <g filter="url(#pool-glow)">
-            <ellipse cx="500" cy="920" rx="120" ry="35" fill="url(#lava-pool)" />
-            <ellipse cx="960" cy="950" rx="150" ry="40" fill="url(#lava-pool)" />
-            <ellipse cx="1400" cy="910" rx="110" ry="30" fill="url(#lava-pool)" />
+            <ellipse cx="500" cy="920" rx="120" ry="35" fill="url(#lava-pool)">
+              <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite" />
+              <animate attributeName="rx" values="120;125;120" dur="3s" repeatCount="indefinite" />
+              <animate attributeName="ry" values="35;37;35" dur="3s" repeatCount="indefinite" />
+            </ellipse>
+            <ellipse cx="960" cy="950" rx="150" ry="40" fill="url(#lava-pool)">
+              <animate attributeName="opacity" values="0.6;1;0.6" dur="4s" begin="1.2s" repeatCount="indefinite" />
+              <animate attributeName="rx" values="150;155;150" dur="4s" begin="1.2s" repeatCount="indefinite" />
+              <animate attributeName="ry" values="40;42;40" dur="4s" begin="1.2s" repeatCount="indefinite" />
+            </ellipse>
+            <ellipse cx="1400" cy="910" rx="110" ry="30" fill="url(#lava-pool)">
+              <animate attributeName="opacity" values="0.6;1;0.6" dur="5s" begin="2.5s" repeatCount="indefinite" />
+              <animate attributeName="rx" values="110;115;110" dur="5s" begin="2.5s" repeatCount="indefinite" />
+              <animate attributeName="ry" values="30;32;30" dur="5s" begin="2.5s" repeatCount="indefinite" />
+            </ellipse>
           </g>
 
           {/* Ground plane */}
@@ -494,6 +514,15 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
         </svg>
       </div>
 
+      {/* Glowing arcane sigil on the mountain face */}
+      <VolcanoSigil />
+
+      {/* Ravens circling high in the sky */}
+      <Ravens />
+
+      {/* Hanging chains and cages from rock overhangs */}
+      <HangingChains />
+
       {/* Easter eggs hidden in the rocks */}
       <VolcanoEasterEggs />
 
@@ -508,6 +537,9 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
 
       {/* Volcanic ash falling across the scene */}
       <VolcanicAsh />
+
+      {/* Cinder spark fountains from lava pools */}
+      <CinderFountains />
 
       {/* Heat haze / smoke wisps rising from lava */}
       <HeatHaze />
