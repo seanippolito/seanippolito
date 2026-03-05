@@ -6,6 +6,7 @@ import { Game } from "./components/Game"
 import { useAmbientAudio } from "./hooks/useAmbientAudio"
 import { useVolcanoAudio } from "./hooks/useVolcanoAudio"
 import { useHeavenAudio } from "./hooks/useHeavenAudio"
+import { useBeachAudio } from "./hooks/useBeachAudio"
 import { SCENES, getTarget } from "./data/scenes"
 import type { SceneName, Direction } from "./data/scenes"
 
@@ -19,6 +20,7 @@ function App() {
   const audio = useAmbientAudio()
   const volcanoAudio = useVolcanoAudio()
   const heavenAudio = useHeavenAudio()
+  const beachAudio = useBeachAudio()
 
   // Create AudioContext on first interaction (any gesture)
   const audioInitRef = useRef(false)
@@ -30,6 +32,7 @@ function App() {
       audio.start()
       volcanoAudio.start()
       heavenAudio.start()
+      beachAudio.start()
       window.removeEventListener("click", handler)
       window.removeEventListener("mousemove", handler)
       window.removeEventListener("keydown", handler)
@@ -45,7 +48,7 @@ function App() {
       window.removeEventListener("keydown", handler)
       window.removeEventListener("touchstart", handler)
     }
-  }, [audio.start, volcanoAudio.start, heavenAudio.start])
+  }, [audio.start, volcanoAudio.start, heavenAudio.start, beachAudio.start])
 
   // Cross-fade audio based on active scene and mute state
   useEffect(() => {
@@ -53,6 +56,7 @@ function App() {
     audio.setMasterVolume(currentScene === "jungle" ? vol : 0)
     volcanoAudio.setMasterVolume(currentScene === "volcano" ? vol : 0)
     heavenAudio.setMasterVolume(currentScene === "heaven" ? vol : 0)
+    beachAudio.setMasterVolume(currentScene === "beach" ? vol : 0)
   }, [currentScene, audio.muted]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleRainChange = useCallback(
@@ -67,8 +71,9 @@ function App() {
       audio.setPan(x * 0.5)
       volcanoAudio.setPan(x * 0.5)
       heavenAudio.setPan(x * 0.5)
+      beachAudio.setPan(x * 0.5)
     },
-    [audio.setPan, volcanoAudio.setPan, heavenAudio.setPan]
+    [audio.setPan, volcanoAudio.setPan, heavenAudio.setPan, beachAudio.setPan]
   )
 
   const handleNavigate = useCallback(
@@ -118,7 +123,7 @@ function App() {
 
   // Only forward rain callback when jungle is active; mouse panning works for all scenes with audio
   const rainChange = currentScene === "jungle" ? handleRainChange : undefined
-  const mouseXChange = (currentScene === "jungle" || currentScene === "volcano" || currentScene === "heaven") ? handleMouseXChange : undefined
+  const mouseXChange = (currentScene === "jungle" || currentScene === "volcano" || currentScene === "heaven" || currentScene === "beach") ? handleMouseXChange : undefined
 
   return (
     <div
