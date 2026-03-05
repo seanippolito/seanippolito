@@ -4,6 +4,12 @@ import { EmberTrail } from "./EmberTrail"
 import { HeatHaze } from "./HeatHaze"
 import { CursorBat } from "./CursorBat"
 import { VolcanoBoulders } from "./VolcanoBoulders"
+import { VolcanicAsh } from "./VolcanicAsh"
+import { VolcanoLightning } from "./VolcanoLightning"
+import { SmokePlume } from "./SmokePlume"
+import { ScreenTremor } from "./ScreenTremor"
+import { VolcanoEasterEggs } from "./VolcanoEasterEggs"
+import { TorchVignette } from "./TorchVignette"
 
 interface VolcanoSceneProps {
   onRainChange?: (intensity: number) => void
@@ -87,23 +93,53 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
             opacity="0.3"
           />
 
-          {/* Lava rivers flowing down mountain */}
+          {/* Lava rivers flowing down mountain — thick glowing streams */}
+          {/* Main central flow */}
           <path
             d="M960 95 Q955 200 940 350 Q930 450 960 550 Q970 620 965 700"
-            fill="none" stroke="#ea580c" strokeWidth="3" opacity="0.35"
+            fill="none" stroke="#ea580c" strokeWidth="8" opacity="0.4"
+          />
+          <path
+            d="M960 95 Q955 200 940 350 Q930 450 960 550 Q970 620 965 700"
+            fill="none" stroke="#fbbf24" strokeWidth="3" opacity="0.25"
+          />
+          {/* Right flow */}
+          <path
+            d="M960 95 Q970 180 990 300 Q1010 420 1000 520 Q995 600 1010 700"
+            fill="none" stroke="#ea580c" strokeWidth="7" opacity="0.35"
           />
           <path
             d="M960 95 Q970 180 990 300 Q1010 420 1000 520 Q995 600 1010 700"
-            fill="none" stroke="#ea580c" strokeWidth="2.5" opacity="0.25"
+            fill="none" stroke="#fbbf24" strokeWidth="2.5" opacity="0.2"
+          />
+          {/* Left branch */}
+          <path
+            d="M950 130 Q920 280 880 420 Q860 500 850 600"
+            fill="none" stroke="#ea580c" strokeWidth="6" opacity="0.3"
           />
           <path
             d="M950 130 Q920 280 880 420 Q860 500 850 600"
-            fill="none" stroke="#ea580c" strokeWidth="2" opacity="0.2"
+            fill="none" stroke="#fbbf24" strokeWidth="2" opacity="0.15"
+          />
+          {/* Right branch */}
+          <path
+            d="M970 130 Q1010 260 1060 400 Q1080 480 1090 580"
+            fill="none" stroke="#ea580c" strokeWidth="6" opacity="0.3"
           />
           <path
             d="M970 130 Q1010 260 1060 400 Q1080 480 1090 580"
-            fill="none" stroke="#ea580c" strokeWidth="2" opacity="0.2"
+            fill="none" stroke="#fbbf24" strokeWidth="2" opacity="0.15"
           />
+          {/* Extra thin tributaries */}
+          <path
+            d="M940 350 Q910 400 890 480"
+            fill="none" stroke="#ea580c" strokeWidth="4" opacity="0.2"
+          />
+          <path
+            d="M990 300 Q1030 360 1050 440"
+            fill="none" stroke="#ea580c" strokeWidth="4" opacity="0.2"
+          />
+
 
           {/* Lava haze at bottom */}
           <rect x="0" y="500" width="1920" height="580" fill="url(#lava-haze)" />
@@ -175,10 +211,12 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
           />
 
           {/* Lava cracks in the ground */}
-          <path d="M200 750 Q300 740 400 760 Q500 780 550 770" fill="none" stroke="#ea580c" strokeWidth="1.5" opacity="0.2" />
-          <path d="M700 800 Q780 790 850 810 Q900 820 950 800" fill="none" stroke="#ea580c" strokeWidth="1" opacity="0.15" />
-          <path d="M1100 780 Q1200 770 1300 790 Q1380 800 1450 785" fill="none" stroke="#ea580c" strokeWidth="1.5" opacity="0.18" />
-          <path d="M1550 760 Q1650 750 1750 770" fill="none" stroke="#ea580c" strokeWidth="1" opacity="0.15" />
+          <path d="M200 750 Q300 740 400 760 Q500 780 550 770" fill="none" stroke="#ea580c" strokeWidth="4" opacity="0.3" />
+          <path d="M200 750 Q300 740 400 760 Q500 780 550 770" fill="none" stroke="#fbbf24" strokeWidth="1.5" opacity="0.15" />
+          <path d="M700 800 Q780 790 850 810 Q900 820 950 800" fill="none" stroke="#ea580c" strokeWidth="3.5" opacity="0.25" />
+          <path d="M1100 780 Q1200 770 1300 790 Q1380 800 1450 785" fill="none" stroke="#ea580c" strokeWidth="4" opacity="0.28" />
+          <path d="M1100 780 Q1200 770 1300 790 Q1380 800 1450 785" fill="none" stroke="#fbbf24" strokeWidth="1.5" opacity="0.12" />
+          <path d="M1550 760 Q1650 750 1750 770" fill="none" stroke="#ea580c" strokeWidth="3" opacity="0.22" />
 
           {/* Mid-level bats — larger, closer */}
           <g opacity="0.55">
@@ -311,9 +349,13 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
           <rect x="0" y="900" width="1920" height="180" fill="rgba(10,2,2,0.6)" />
 
           {/* Ground lava veins */}
-          <path d="M400 1080 Q450 980 500 920" fill="none" stroke="#ea580c" strokeWidth="2" opacity="0.2" />
-          <path d="M960 1080 Q970 1000 960 950" fill="none" stroke="#ea580c" strokeWidth="2.5" opacity="0.25" />
-          <path d="M1500 1080 Q1480 990 1400 920" fill="none" stroke="#ea580c" strokeWidth="2" opacity="0.2" />
+          <path d="M400 1080 Q450 980 500 920" fill="none" stroke="#ea580c" strokeWidth="5" opacity="0.3" />
+          <path d="M400 1080 Q450 980 500 920" fill="none" stroke="#fbbf24" strokeWidth="2" opacity="0.15" />
+          <path d="M960 1080 Q970 1000 960 950" fill="none" stroke="#ea580c" strokeWidth="6" opacity="0.35" />
+          <path d="M960 1080 Q970 1000 960 950" fill="none" stroke="#fbbf24" strokeWidth="2" opacity="0.18" />
+          <path d="M1500 1080 Q1480 990 1400 920" fill="none" stroke="#ea580c" strokeWidth="5" opacity="0.3" />
+          <path d="M1500 1080 Q1480 990 1400 920" fill="none" stroke="#fbbf24" strokeWidth="2" opacity="0.15" />
+
 
           {/* === Demon silhouettes — walking/patrolling === */}
 
@@ -452,8 +494,20 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
         </svg>
       </div>
 
+      {/* Easter eggs hidden in the rocks */}
+      <VolcanoEasterEggs />
+
+      {/* Smoke plume billowing from peak */}
+      <SmokePlume />
+
       {/* Boulders erupting from volcano peak */}
       <VolcanoBoulders />
+
+      {/* Volcanic lightning near eruption plume */}
+      <VolcanoLightning />
+
+      {/* Volcanic ash falling across the scene */}
+      <VolcanicAsh />
 
       {/* Heat haze / smoke wisps rising from lava */}
       <HeatHaze />
@@ -463,6 +517,12 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
 
       {/* Cursor companion — flying bat */}
       <CursorBat />
+
+      {/* Torch vignette — dark edges with warm firelight following cursor */}
+      <TorchVignette />
+
+      {/* Screen shake on eruption booms (renderless) */}
+      <ScreenTremor />
     </div>
   )
 })

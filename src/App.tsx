@@ -49,7 +49,7 @@ function App() {
     const vol = audio.muted ? 0 : 0.15
     audio.setMasterVolume(currentScene === "jungle" ? vol : 0)
     volcanoAudio.setMasterVolume(currentScene === "volcano" ? vol : 0)
-  }, [currentScene, audio.muted, audio.setMasterVolume, volcanoAudio.setMasterVolume])
+  }, [currentScene, audio.muted]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleRainChange = useCallback(
     (intensity: number) => {

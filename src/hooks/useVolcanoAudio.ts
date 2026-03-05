@@ -186,6 +186,9 @@ export function useVolcanoAudio(): VolcanoAudioControls {
       if (ctx.state !== "running") return
       const now = ctx.currentTime
 
+      // Trigger screen tremor
+      window.dispatchEvent(new CustomEvent("volcano-tremor"))
+
       // Deep boom
       const boomSource = ctx.createBufferSource()
       boomSource.buffer = noiseBuffer
@@ -261,7 +264,55 @@ export function useVolcanoAudio(): VolcanoAudioControls {
     eerieLfoGain.connect(eerieGain1.gain)
     eerieLfo.start()
 
+    // === Lightning thunder — sharp electric crack triggered by volcano-thunder event ===
+    const playLightningThunder = () => {
+      if (ctx.state !== "running") return
+      const now = ctx.currentTime
+
+      // Sharp electric crack — higher freq than eruption boom
+      const crackSource = ctx.createBufferSource()
+      crackSource.buffer = noiseBuffer
+      const crackFilter = ctx.createBiquadFilter()
+      crackFilter.type = "bandpass"
+      crackFilter.frequency.value = 400 + Math.random() * 500
+      crackFilter.Q.value = 1 + Math.random() * 2
+      const crackGain = ctx.createGain()
+      crackGain.gain.setValueAtTime(0, now)
+      crackGain.gain.linearRampToValueAtTime(2.5 + Math.random(), now + 0.01)
+      crackGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3 + Math.random() * 0.3)
+      crackSource.connect(crackFilter)
+      crackFilter.connect(crackGain)
+      crackGain.connect(master)
+      crackSource.start(now)
+      crackSource.stop(now + 1)
+
+      // Low rumble tail
+      const rumbleSource = ctx.createBufferSource()
+      rumbleSource.buffer = noiseBuffer
+      rumbleSource.loop = true
+      const rumbleFilter = ctx.createBiquadFilter()
+      rumbleFilter.type = "lowpass"
+      rumbleFilter.frequency.setValueAtTime(120, now)
+      rumbleFilter.frequency.exponentialRampToValueAtTime(40, now + 1.5)
+      rumbleFilter.Q.value = 2
+      const rumbleGain = ctx.createGain()
+      rumbleGain.gain.setValueAtTime(0, now + 0.05)
+      rumbleGain.gain.linearRampToValueAtTime(1.5, now + 0.1)
+      rumbleGain.gain.exponentialRampToValueAtTime(0.01, now + 1.5)
+      rumbleSource.connect(rumbleFilter)
+      rumbleFilter.connect(rumbleGain)
+      rumbleGain.connect(master)
+      rumbleSource.start(now)
+      rumbleSource.stop(now + 2)
+    }
+
+    window.addEventListener("volcano-thunder", playLightningThunder)
+
     setStarted(true)
+
+    // Store cleanup ref
+    const thunderCleanup = () => window.removeEventListener("volcano-thunder", playLightningThunder)
+    ;(intervalsRef as unknown as { _thunderCleanup: () => void })._thunderCleanup = thunderCleanup
   }, [])
 
   const stop = useCallback(() => {
@@ -293,6 +344,8 @@ export function useVolcanoAudio(): VolcanoAudioControls {
   useEffect(() => {
     return () => {
       intervalsRef.current.forEach(clearInterval)
+      const thunderCleanup = (intervalsRef as unknown as { _thunderCleanup?: () => void })._thunderCleanup
+      if (thunderCleanup) thunderCleanup()
       ctxRef.current?.close()
     }
   }, [])
