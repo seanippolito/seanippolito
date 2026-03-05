@@ -8,6 +8,7 @@ import { LightningAmbient } from "./LightningAmbient"
 import { DivineVignette } from "./DivineVignette"
 import { CursorDivineGlow } from "./CursorDivineGlow"
 import { HeavenEasterEggs } from "./HeavenEasterEggs"
+import { OlympianStatues } from "./OlympianStatues"
 
 interface HeavenSceneProps {
   onRainChange?: (intensity: number) => void
@@ -247,35 +248,6 @@ export const HeavenScene = memo(function HeavenScene(props: HeavenSceneProps) {
           <ellipse cx="1700" cy="325" rx="10" ry="5" fill="rgba(101,163,13,0.12)" transform="rotate(-10 1700 325)" />
           <ellipse cx="1660" cy="315" rx="11" ry="5" fill="rgba(101,163,13,0.1)" transform="rotate(5 1660 315)" />
 
-          {/* Zeus statue silhouette — left of center */}
-          <g opacity="0.12" transform="translate(350, 600)">
-            {/* Base pedestal */}
-            <rect x="-25" y="0" width="50" height="15" rx="3" fill="rgba(180,180,200,1)" />
-            {/* Body */}
-            <rect x="-10" y="-60" width="20" height="60" rx="5" fill="rgba(180,180,200,1)" />
-            {/* Head */}
-            <circle cx="0" cy="-72" r="12" fill="rgba(180,180,200,1)" />
-            {/* Raised arm with thunderbolt */}
-            <line x1="8" y1="-50" x2="35" y2="-85" stroke="rgba(180,180,200,1)" strokeWidth="4" strokeLinecap="round" />
-            {/* Thunderbolt */}
-            <path d="M35 -85 L30 -75 L38 -78 L33 -68" fill="none" stroke="rgba(251,191,36,0.5)" strokeWidth="2" />
-            {/* Shield arm */}
-            <line x1="-8" y1="-45" x2="-25" y2="-35" stroke="rgba(180,180,200,1)" strokeWidth="4" strokeLinecap="round" />
-            <circle cx="-28" cy="-30" r="10" fill="none" stroke="rgba(180,180,200,1)" strokeWidth="2" />
-          </g>
-
-          {/* Athena statue silhouette — right of center */}
-          <g opacity="0.1" transform="translate(1550, 620)">
-            <rect x="-20" y="0" width="40" height="12" rx="3" fill="rgba(180,180,200,1)" />
-            <path d="M-8 0 L-12 -55 Q0 -70 12 -55 L8 0Z" fill="rgba(180,180,200,1)" />
-            <circle cx="0" cy="-62" r="10" fill="rgba(180,180,200,1)" />
-            {/* Helmet crest */}
-            <path d="M-4 -72 Q0 -82 4 -72" fill="rgba(180,180,200,1)" />
-            {/* Spear */}
-            <line x1="14" y1="-50" x2="18" y2="-90" stroke="rgba(180,180,200,1)" strokeWidth="2" />
-            <path d="M15 -90 L18 -98 L21 -90" fill="rgba(180,180,200,1)" />
-          </g>
-
           {/* Floating cloud floor */}
           <ellipse cx="200" cy="850" rx="350" ry="100" fill="rgba(255,255,255,0.3)" />
           <ellipse cx="600" cy="880" rx="280" ry="80" fill="rgba(255,255,255,0.25)" />
@@ -301,6 +273,9 @@ export const HeavenScene = memo(function HeavenScene(props: HeavenSceneProps) {
 
       {/* Soaring eagles */}
       <OlympusEagles />
+
+      {/* Vibrant CSS god statues */}
+      <OlympianStatues />
 
       {/* Hidden mythological easter eggs */}
       <HeavenEasterEggs />
