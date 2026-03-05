@@ -14,6 +14,7 @@ import { FrostVignette } from "./FrostVignette"
 import { SnowEasterEggs } from "./SnowEasterEggs"
 import { IciclesDrip } from "./IciclesDrip"
 import { SwayingPines } from "./SwayingPines"
+import { SnowCursor } from "./SnowCursor"
 
 interface SnowSceneProps {
   onRainChange?: (intensity: number) => void
@@ -477,6 +478,7 @@ export const SnowScene = memo(function SnowScene(_props: SnowSceneProps) {
       <CabinSmoke windIntensity={windIntensity} />
       <FrozenSparkle />
       <IciclesDrip />
+      <SnowCursor />
       <CursorFox />
       <SnowEasterEggs />
       <FrostVignette />
