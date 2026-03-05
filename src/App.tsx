@@ -74,6 +74,32 @@ function App() {
     setTransitioning(false)
   }, [])
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (gameActive) return
+
+      const keyMap: Record<string, Direction> = {
+        ArrowUp: "north",
+        ArrowDown: "south",
+        ArrowLeft: "west",
+        ArrowRight: "east",
+      }
+
+      const direction = keyMap[e.key]
+      if (direction) {
+        e.preventDefault()
+        handleNavigate(direction)
+      } else if (e.key === " ") {
+        e.preventDefault()
+        setGameActive(true)
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [gameActive, handleNavigate])
+
   // Only forward rain/audio callbacks when jungle is active
   const rainChange = currentScene === "jungle" ? handleRainChange : undefined
   const mouseXChange = currentScene === "jungle" ? handleMouseXChange : undefined

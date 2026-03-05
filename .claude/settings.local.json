@@ -3,7 +3,19 @@
     "allow": [
       "Bash(npm create:*)",
       "Bash(rm:*)",
-      "Bash(npx:*)"
+      "Bash(npx:*)",
+      "Bash(npm run:*)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "mcp__plugin_playwright_playwright__browser_run_code",
+      "Skill(commit-commands:commit)",
+      "mcp__plugin_figma_figma__generate_figma_design",
+      "mcp__plugin_figma_figma__get_design_context",
+      "mcp__plugin_figma_figma__get_metadata",
+      "mcp__plugin_figma_figma__get_screenshot",
+      "Bash(python:*)",
+      "mcp__plugin_playwright_playwright__browser_click",
+      "mcp__plugin_playwright_playwright__browser_press_key"
     ]
   }
 }

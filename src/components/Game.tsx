@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 
 import type { SceneName } from "../data/scenes"
 
@@ -12,6 +12,14 @@ export function Game({ onClose }: GameProps) {
   const [highScore] = useState(() => {
     return parseInt(localStorage.getItem("seanippolito_highScore") || "0", 10)
   })
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose()
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [onClose])
 
   const handleClick = useCallback(() => {
     setScore((prev) => {

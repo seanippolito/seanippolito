@@ -51,7 +51,7 @@ export function CenterContent({ audioMuted, onToggleAudio }: CenterContentProps)
             onClick={onToggleAudio}
             aria-label={audioMuted ? "Unmute ambient audio" : "Mute ambient audio"}
             className="rounded-full border border-white/10 p-3 text-white/60 transition-all duration-500 hover:border-amber-200/30 hover:text-amber-200/80 hover:shadow-[0_0_30px_rgba(200,180,60,0.08)]"
-            style={{ cursor: "none" }}
+            style={{ cursor: "pointer" }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
