@@ -15,6 +15,7 @@ import { FallingPetals } from "./FallingPetals"
 import { DoveFlock } from "./DoveFlock"
 import { RainbowBridge } from "./RainbowBridge"
 import { FloatingIslands } from "./FloatingIslands"
+import { CursorAngels } from "./CursorAngels"
 
 interface HeavenSceneProps {
   onRainChange?: (intensity: number) => void
@@ -306,6 +307,9 @@ export const HeavenScene = memo(function HeavenScene(props: HeavenSceneProps) {
 
       {/* Rising golden sparkle particles */}
       <GoldenMotes />
+
+      {/* Gold nugget cursor + angel swarm */}
+      <CursorAngels />
 
       {/* Golden cursor trail */}
       <CursorDivineGlow />
