@@ -16,6 +16,9 @@ const WAVE_CONFIGS: WaveConfig[] = [
   { baseY: 550, amplitude: 12, frequency: 0.002, speed: 0.65, color: "#14b8a6", foamOpacity: 0.2 },
 ];
 
+// Each wave fills a band below its crest, not the entire screen
+const WAVE_BAND_HEIGHT = 40;
+
 function buildWavePath(
   baseY: number,
   amplitude: number,
@@ -31,7 +34,8 @@ function buildWavePath(
     const y = baseY + amplitude * Math.sin(frequency * x + phase);
     d += ` L${x.toFixed(1)} ${y.toFixed(2)}`;
   }
-  d += ` L${width} 1080 L0 1080 Z`;
+  const bottomY = baseY + amplitude + WAVE_BAND_HEIGHT;
+  d += ` L${width} ${bottomY} L0 ${bottomY} Z`;
   return d;
 }
 
@@ -108,7 +112,7 @@ export const OceanWaves = memo(function OceanWaves() {
 
           return (
             <g key={i}>
-              <path d={d} fill={wave.color} opacity={0.85} />
+              <path d={d} fill={wave.color} opacity={0.3} />
               {foamArcs.map((arc, j) => (
                 <ellipse
                   key={j}

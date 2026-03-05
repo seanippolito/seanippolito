@@ -32,7 +32,7 @@ export const BeachScene = memo(function BeachScene({ onMouseXChange }: BeachScen
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(to bottom, #87ceeb 0%, #60b5d4 25%, #2dd4bf 50%, #c2956b 75%, #a0784a 100%)",
+            "linear-gradient(to bottom, #87ceeb 0%, #60b5d4 20%, #2dd4bf 42%, #c2956b 62%, #a0784a 100%)",
         }}
       />
 
@@ -119,7 +119,7 @@ export const BeachScene = memo(function BeachScene({ onMouseXChange }: BeachScen
           {/* Sand dunes in distance */}
           <path
             d="M0 620 Q300 590 600 610 Q900 630 1200 600 Q1500 580 1920 620 L1920 1080 L0 1080Z"
-            fill="rgba(194,149,107,0.3)"
+            fill="rgba(194,149,107,0.5)"
           />
         </svg>
       </div>
@@ -224,7 +224,7 @@ export const BeachScene = memo(function BeachScene({ onMouseXChange }: BeachScen
           {/* Mid sand layer */}
           <path
             d="M0 700 Q400 680 800 700 Q1200 720 1600 690 Q1800 680 1920 700 L1920 1080 L0 1080Z"
-            fill="rgba(194,149,107,0.35)"
+            fill="rgba(194,149,107,0.55)"
           />
         </svg>
       </div>
@@ -321,11 +321,11 @@ export const BeachScene = memo(function BeachScene({ onMouseXChange }: BeachScen
           {/* Foreground sand */}
           <path
             d="M0 800 Q300 780 600 800 Q900 820 1200 800 Q1500 780 1920 800 L1920 1080 L0 1080Z"
-            fill="rgba(212,165,116,0.4)"
+            fill="rgba(212,165,116,0.6)"
           />
           <path
             d="M0 860 Q400 845 800 860 Q1200 875 1600 855 Q1800 845 1920 860 L1920 1080 L0 1080Z"
-            fill="rgba(194,149,107,0.3)"
+            fill="rgba(194,149,107,0.5)"
           />
         </svg>
       </div>
