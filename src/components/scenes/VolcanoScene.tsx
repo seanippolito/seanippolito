@@ -2,6 +2,7 @@ import { memo } from "react"
 import { useMouseParallax, getLayerTransform } from "../../hooks/useMouseParallax"
 import { EmberTrail } from "./EmberTrail"
 import { HeatHaze } from "./HeatHaze"
+import { CursorBat } from "./CursorBat"
 
 interface VolcanoSceneProps {
   onRainChange?: (intensity: number) => void
@@ -445,6 +446,9 @@ export const VolcanoScene = memo(function VolcanoScene(_props: VolcanoSceneProps
 
       {/* Ember trail following mouse cursor */}
       <EmberTrail />
+
+      {/* Cursor companion — flying bat */}
+      <CursorBat />
     </div>
   )
 })

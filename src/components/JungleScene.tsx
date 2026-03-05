@@ -14,6 +14,7 @@ import { Flashlight } from "./jungle/Flashlight"
 import { EasterEggs } from "./jungle/EasterEggs"
 import { Rain } from "./jungle/Rain"
 import { LeafTrail } from "./jungle/LeafTrail"
+import { CursorFirefly } from "./jungle/CursorFirefly"
 
 type RainPhase = "drizzle" | "heavy" | "tapering" | "off"
 
@@ -168,6 +169,9 @@ export function JungleScene({ onRainChange, onMouseXChange }: JungleSceneProps) 
 
       {/* Layer 9b: Leaf trail — between clouds and flashlight */}
       <LeafTrail />
+
+      {/* Cursor companion — lightning bug */}
+      <CursorFirefly />
 
       {/* Layer 10: Flashlight — dark vignette with bright circle following cursor */}
       <Flashlight />
