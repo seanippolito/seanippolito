@@ -98,7 +98,7 @@ export const SceneTransition = memo(function SceneTransition({
       if (scene === "jungle") {
         return { onRainChange, onMouseXChange }
       }
-      if (scene === "volcano") {
+      if (scene === "volcano" || scene === "heaven") {
         return { onMouseXChange }
       }
       return {}

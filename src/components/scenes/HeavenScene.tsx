@@ -1,13 +1,29 @@
-import { memo } from "react"
+import { memo, useEffect } from "react"
 import { useMouseParallax, getLayerTransform } from "../../hooks/useMouseParallax"
+import { CloudDrift } from "./CloudDrift"
+import { GodRays } from "./GodRays"
+import { OlympusEagles } from "./OlympusEagles"
+import { GoldenMotes } from "./GoldenMotes"
+import { LightningAmbient } from "./LightningAmbient"
+import { DivineVignette } from "./DivineVignette"
+import { CursorDivineGlow } from "./CursorDivineGlow"
+import { HeavenEasterEggs } from "./HeavenEasterEggs"
 
 interface HeavenSceneProps {
   onRainChange?: (intensity: number) => void
   onMouseXChange?: (x: number) => void
 }
 
-export const HeavenScene = memo(function HeavenScene(_props: HeavenSceneProps) {
+export const HeavenScene = memo(function HeavenScene(props: HeavenSceneProps) {
   const offset = useMouseParallax({ strength: 25, smoothing: 0.06 })
+
+  // Forward mouse X for audio panning
+  useEffect(() => {
+    if (props.onMouseXChange) {
+      const normalized = offset.x / 25
+      props.onMouseXChange(normalized)
+    }
+  }, [offset.x, props.onMouseXChange])
 
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden">
@@ -273,6 +289,30 @@ export const HeavenScene = memo(function HeavenScene(_props: HeavenSceneProps) {
           <ellipse cx="1500" cy="940" rx="480" ry="120" fill="rgba(255,255,255,0.38)" />
         </svg>
       </div>
+
+      {/* Animated god-rays overlay */}
+      <GodRays />
+
+      {/* Distant sheet lightning in clouds */}
+      <LightningAmbient />
+
+      {/* Drifting clouds across the scene */}
+      <CloudDrift />
+
+      {/* Soaring eagles */}
+      <OlympusEagles />
+
+      {/* Hidden mythological easter eggs */}
+      <HeavenEasterEggs />
+
+      {/* Rising golden sparkle particles */}
+      <GoldenMotes />
+
+      {/* Golden cursor trail */}
+      <CursorDivineGlow />
+
+      {/* Subtle divine light vignette */}
+      <DivineVignette />
     </div>
   )
 })

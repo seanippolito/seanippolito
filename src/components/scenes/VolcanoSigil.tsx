@@ -1,4 +1,5 @@
-import { memo, useState, useEffect, useRef, useCallback } from "react"
+import { memo, useState, useEffect, useRef } from "react"
+import type { ReactElement } from "react"
 
 /**
  * VolcanoSigil — A large arcane sigil etched into the volcano mountain face
@@ -52,7 +53,7 @@ export const VolcanoSigil = memo(function VolcanoSigil() {
   const runeR = 68
 
   // Generate tick marks around outer circle
-  const ticks: JSX.Element[] = []
+  const ticks: ReactElement[] = []
   for (let i = 0; i < tickCount; i++) {
     const angle = (i * 2 * Math.PI) / tickCount
     const len = i % 3 === 0 ? 8 : 4
