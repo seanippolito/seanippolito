@@ -1,4 +1,5 @@
 import { memo, useEffect } from "react"
+import { useIsMobile } from "../../hooks/useIsMobile"
 import { useMouseParallax, getLayerTransform } from "../../hooks/useMouseParallax"
 import { OceanWaves } from "./OceanWaves"
 import { SwayingPalms } from "./SwayingPalms"
@@ -19,6 +20,7 @@ interface BeachSceneProps {
 }
 
 export const BeachScene = memo(function BeachScene({ onMouseXChange }: BeachSceneProps) {
+  const isMobile = useIsMobile()
   const offset = useMouseParallax({ strength: 25, smoothing: 0.06 })
 
   // Forward mouse panning for audio
@@ -467,17 +469,17 @@ export const BeachScene = memo(function BeachScene({ onMouseXChange }: BeachScen
       </div>
 
       {/* Animated components — layered from background to foreground */}
-      <TropicalClouds />
+      {!isMobile && <TropicalClouds />}
       <SunShimmer />
-      <OceanWaves />
+      {!isMobile && <OceanWaves />}
       <CoralGlow />
       <FloatingJellyfish />
-      <TideFoam />
+      {!isMobile && <TideFoam />}
       <SwayingPalms />
       <TropicalBirds />
       <SandSparkle />
       <BeachEasterEggs />
-      <SunbeamVignette />
+      {!isMobile && <SunbeamVignette />}
       <CursorFish />
     </div>
   )

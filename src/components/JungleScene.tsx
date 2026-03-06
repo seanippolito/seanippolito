@@ -162,15 +162,17 @@ export function JungleScene({ onRainChange, onMouseXChange }: JungleSceneProps) 
       </div>
 
       {/* Layer 9: Clouds — closest to camera, float over everything (depth: 1.0) */}
-      <div
-        className="absolute inset-0"
-        style={{ transform: getLayerTransform(offset, 1.0) }}
-      >
-        <Smoke />
-      </div>
+      {!isMobile && (
+        <div
+          className="absolute inset-0"
+          style={{ transform: getLayerTransform(offset, 1.0) }}
+        >
+          <Smoke />
+        </div>
+      )}
 
       {/* Layer 9b: Leaf trail — between clouds and flashlight */}
-      <LeafTrail />
+      {!isMobile && <LeafTrail />}
 
       {/* Cursor companion — lightning bug */}
       <CursorFirefly />

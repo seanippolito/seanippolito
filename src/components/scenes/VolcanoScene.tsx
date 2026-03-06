@@ -517,19 +517,19 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
       </div>
 
       {/* Glowing arcane sigil on the mountain face */}
-      <VolcanoSigil />
+      {!isMobile && <VolcanoSigil />}
 
       {/* Ravens circling high in the sky */}
-      <Ravens />
+      {!isMobile && <Ravens />}
 
       {/* Hanging chains and cages from rock overhangs */}
-      <HangingChains />
+      {!isMobile && <HangingChains />}
 
       {/* Easter eggs hidden in the rocks */}
       <VolcanoEasterEggs />
 
       {/* Smoke plume billowing from peak */}
-      <SmokePlume />
+      {!isMobile && <SmokePlume />}
 
       {/* Boulders erupting from volcano peak (desktop only) */}
       {!isMobile && <VolcanoBoulders />}
@@ -541,10 +541,10 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
       <VolcanicAsh />
 
       {/* Cinder spark fountains from lava pools */}
-      <CinderFountains />
+      {!isMobile && <CinderFountains />}
 
       {/* Heat haze / smoke wisps rising from lava */}
-      <HeatHaze />
+      {!isMobile && <HeatHaze />}
 
       {/* Ember trail following mouse cursor */}
       <EmberTrail />
@@ -553,10 +553,10 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
       <CursorBat />
 
       {/* Torch vignette — dark edges with warm firelight following cursor */}
-      <TorchVignette />
+      {!isMobile && <TorchVignette />}
 
       {/* Screen shake on eruption booms (renderless) */}
-      <ScreenTremor />
+      {!isMobile && <ScreenTremor />}
     </div>
   )
 })

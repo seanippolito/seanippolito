@@ -473,17 +473,17 @@ export const SnowScene = memo(function SnowScene(_props: SnowSceneProps) {
       <SwayingPines windIntensity={windIntensity} offset={offset} />
       <AuroraBorealis />
       {!isMobile && <FallingSnow windIntensity={windIntensity} />}
-      <BlizzardGusts windIntensity={windIntensity} />
+      {!isMobile && <BlizzardGusts windIntensity={windIntensity} />}
       <BreathMist />
       <WolfPack />
       <OwlInTree />
-      <CabinSmoke windIntensity={windIntensity} />
-      <FrozenSparkle />
+      {!isMobile && <CabinSmoke windIntensity={windIntensity} />}
+      {!isMobile && <FrozenSparkle />}
       <IciclesDrip />
       <SnowCursor />
       <CursorFox />
       <SnowEasterEggs />
-      <FrostVignette />
+      {!isMobile && <FrostVignette />}
     </div>
   )
 })

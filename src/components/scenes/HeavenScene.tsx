@@ -1,4 +1,5 @@
 import { memo, useEffect } from "react"
+import { useIsMobile } from "../../hooks/useIsMobile"
 import { useMouseParallax, getLayerTransform } from "../../hooks/useMouseParallax"
 import { CloudDrift } from "./CloudDrift"
 import { GodRays } from "./GodRays"
@@ -23,6 +24,7 @@ interface HeavenSceneProps {
 }
 
 export const HeavenScene = memo(function HeavenScene(props: HeavenSceneProps) {
+  const isMobile = useIsMobile()
   const offset = useMouseParallax({ strength: 25, smoothing: 0.06 })
 
   // Forward mouse X for audio panning
@@ -270,10 +272,10 @@ export const HeavenScene = memo(function HeavenScene(props: HeavenSceneProps) {
       </div>
 
       {/* Celestial constellations in the upper sky */}
-      <CelestialConstellations />
+      {!isMobile && <CelestialConstellations />}
 
       {/* Faint rainbow arc between cloud banks */}
-      <RainbowBridge />
+      {!isMobile && <RainbowBridge />}
 
       {/* Animated god-rays overlay */}
       <GodRays />
@@ -285,13 +287,13 @@ export const HeavenScene = memo(function HeavenScene(props: HeavenSceneProps) {
       <CloudDrift />
 
       {/* Floating cloud islands with miniature structures */}
-      <FloatingIslands />
+      {!isMobile && <FloatingIslands />}
 
       {/* Soaring eagles */}
       <OlympusEagles />
 
       {/* Occasional dove flocks in V-formation */}
-      <DoveFlock />
+      {!isMobile && <DoveFlock />}
 
       {/* Vibrant CSS god statues */}
       <OlympianStatues />
@@ -303,7 +305,7 @@ export const HeavenScene = memo(function HeavenScene(props: HeavenSceneProps) {
       <HeavenEasterEggs />
 
       {/* Falling flower petals */}
-      <FallingPetals />
+      {!isMobile && <FallingPetals />}
 
       {/* Rising golden sparkle particles */}
       <GoldenMotes />
@@ -315,7 +317,7 @@ export const HeavenScene = memo(function HeavenScene(props: HeavenSceneProps) {
       <CursorDivineGlow />
 
       {/* Subtle divine light vignette */}
-      <DivineVignette />
+      {!isMobile && <DivineVignette />}
     </div>
   )
 })

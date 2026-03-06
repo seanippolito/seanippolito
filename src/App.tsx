@@ -9,6 +9,7 @@ import { useVolcanoAudio } from "./hooks/useVolcanoAudio"
 import { useHeavenAudio } from "./hooks/useHeavenAudio"
 import { useBeachAudio } from "./hooks/useBeachAudio"
 import { useSnowAudio } from "./hooks/useSnowAudio"
+import { useIsMobile } from "./hooks/useIsMobile"
 import { SCENES, getTarget } from "./data/scenes"
 import type { SceneName, Direction } from "./data/scenes"
 
@@ -18,6 +19,7 @@ function App() {
   const [targetScene, setTargetScene] = useState<SceneName | null>(null)
   const [transitionDirection, setTransitionDirection] = useState<Direction | null>(null)
   const [transitioning, setTransitioning] = useState(false)
+  const isMobile = useIsMobile()
 
   const audio = useAmbientAudio()
   const volcanoAudio = useVolcanoAudio()
@@ -25,9 +27,18 @@ function App() {
   const beachAudio = useBeachAudio()
   const snowAudio = useSnowAudio()
 
-  // Create AudioContext on first interaction (any gesture)
+  const audioMap: Record<SceneName, { started: boolean; start: () => void }> = {
+    jungle: audio,
+    volcano: volcanoAudio,
+    heaven: heavenAudio,
+    beach: beachAudio,
+    snow: snowAudio,
+  }
+
+  // Desktop: Create all AudioContexts on first interaction (any gesture)
   const audioInitRef = useRef(false)
   useEffect(() => {
+    if (isMobile) return // Mobile inits audio lazily on unmute
     if (audioInitRef.current) return
     const handler = () => {
       if (audioInitRef.current) return
@@ -52,7 +63,20 @@ function App() {
       window.removeEventListener("keydown", handler)
       window.removeEventListener("touchstart", handler)
     }
-  }, [audio.start, volcanoAudio.start, heavenAudio.start, beachAudio.start, snowAudio.start])
+  }, [isMobile, audio.start, volcanoAudio.start, heavenAudio.start, beachAudio.start, snowAudio.start])
+
+  // Mobile: start new scene's audio on scene change (if unmuted)
+  const prevSceneRef = useRef(currentScene)
+  useEffect(() => {
+    if (!isMobile) return
+    if (currentScene === prevSceneRef.current) return
+    prevSceneRef.current = currentScene
+
+    if (!audio.muted) {
+      const sceneAudio = audioMap[currentScene]
+      if (!sceneAudio.started) sceneAudio.start()
+    }
+  }, [currentScene, isMobile, audio.muted]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Cross-fade audio based on active scene and mute state
   useEffect(() => {
@@ -63,6 +87,16 @@ function App() {
     beachAudio.setMasterVolume(currentScene === "beach" ? vol : 0)
     snowAudio.setMasterVolume(currentScene === "snow" ? vol : 0)
   }, [currentScene, audio.muted]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Mobile-aware mute toggle: starts current scene's audio on first unmute (user gesture)
+  const handleToggleMute = useCallback(() => {
+    if (isMobile && audio.muted) {
+      // About to unmute — start current scene's audio if not started (tap IS the gesture)
+      const sceneAudio = audioMap[currentScene]
+      if (!sceneAudio.started) sceneAudio.start()
+    }
+    audio.toggleMute()
+  }, [isMobile, audio.muted, audio.toggleMute, currentScene]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleRainChange = useCallback(
     (intensity: number) => {
@@ -187,7 +221,7 @@ function App() {
       />
       <CenterContent
         audioMuted={audio.muted}
-        onToggleAudio={audio.toggleMute}
+        onToggleAudio={handleToggleMute}
         currentScene={currentScene}
       />
       {!gameActive && (
