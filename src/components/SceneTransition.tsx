@@ -1,7 +1,9 @@
 import { useRef, useEffect, useCallback, memo, lazy, Suspense } from "react"
 import type { SceneName, Direction } from "../data/scenes"
 
-const JungleScene = lazy(() => import("./JungleScene").then(m => ({ default: m.JungleScene })))
+// Eagerly start loading the default scene so it doesn't wait for React to render
+const jungleImport = import("./JungleScene")
+const JungleScene = lazy(() => jungleImport.then(m => ({ default: m.JungleScene })))
 const HeavenScene = lazy(() => import("./scenes/HeavenScene").then(m => ({ default: m.HeavenScene })))
 const BeachScene = lazy(() => import("./scenes/BeachScene").then(m => ({ default: m.BeachScene })))
 const VolcanoScene = lazy(() => import("./scenes/VolcanoScene").then(m => ({ default: m.VolcanoScene })))

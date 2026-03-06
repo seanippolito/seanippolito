@@ -1,29 +1,17 @@
 import { socialLinks } from "../data/links"
 import type { SceneName } from "../data/scenes"
 
-const LIGHT_SCENES: SceneName[] = ["beach", "heaven", "snow"]
-
 interface CenterContentProps {
   audioMuted?: boolean
   onToggleAudio?: () => void
   currentScene?: SceneName
 }
 
-export function CenterContent({ audioMuted, onToggleAudio, currentScene }: CenterContentProps) {
-  const isLight = currentScene ? LIGHT_SCENES.includes(currentScene) : false
+export function CenterContent({ audioMuted, onToggleAudio }: CenterContentProps) {
 
   return (
     <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 pb-40 text-center sm:px-6 sm:pb-0">
-      {/* Frosted glass backdrop — only on light scenes for contrast */}
-      <div
-        className="flex flex-col items-center rounded-3xl px-8 py-10 sm:px-14 sm:py-14 transition-all duration-1000"
-        style={isLight ? {
-          backdropFilter: "blur(0px) saturate(1.2)",
-          WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-          // backgroundColor: "rgba(0, 0, 0, 0.25)",
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.08)",
-        } : undefined}
-      >
+      <div className="flex flex-col items-center px-8 py-10 sm:px-14 sm:py-14">
         <h1
           className="font-display text-glow mb-4 text-5xl font-light tracking-wide text-white/95 sm:text-6xl md:text-8xl"
           style={{ textShadow: "0 2px 12px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3)" }}
