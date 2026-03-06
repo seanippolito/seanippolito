@@ -1,80 +1,97 @@
 import { socialLinks } from "../data/links"
+import type { SceneName } from "../data/scenes"
+
+const LIGHT_SCENES: SceneName[] = ["beach", "heaven", "snow"]
 
 interface CenterContentProps {
   audioMuted?: boolean
   onToggleAudio?: () => void
+  currentScene?: SceneName
 }
 
-export function CenterContent({ audioMuted, onToggleAudio }: CenterContentProps) {
+export function CenterContent({ audioMuted, onToggleAudio, currentScene }: CenterContentProps) {
+  const isLight = currentScene ? LIGHT_SCENES.includes(currentScene) : false
+
   return (
     <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 pb-40 text-center sm:px-6 sm:pb-0">
-      <h1
-        className="font-display text-glow mb-4 text-5xl font-light tracking-wide text-white/95 sm:text-6xl md:text-8xl"
-        style={{ textShadow: "0 2px 12px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3)" }}
+      {/* Frosted glass backdrop — only on light scenes for contrast */}
+      <div
+        className="flex flex-col items-center rounded-3xl px-8 py-10 sm:px-14 sm:py-14 transition-all duration-1000"
+        style={isLight ? {
+          backdropFilter: "blur(0px) saturate(1.2)",
+          WebkitBackdropFilter: "blur(16px) saturate(1.2)",
+          // backgroundColor: "rgba(0, 0, 0, 0.25)",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.08)",
+        } : undefined}
       >
-        Sean Ippolito
-      </h1>
-      <p
-        className="text-glow mb-8 text-sm font-light tracking-widest text-white/60 uppercase sm:mb-12 sm:text-base md:text-lg"
-        style={{ textShadow: "0 1px 8px rgba(0,0,0,0.5)" }}
-      >
-        I build elegant software and playful experiences
-      </p>
-
-      {/* Social links */}
-      <div className="mb-6 flex flex-wrap justify-center gap-4 sm:mb-10 sm:gap-8">
-        {socialLinks.map((link) => (
-          <a
-            key={link.label}
-            href={link.url}
-            target={link.url.startsWith("mailto:") ? undefined : "_blank"}
-            rel="noopener noreferrer"
-            className="text-glow-hover group flex items-center gap-2 text-white/60 transition-all duration-500 hover:text-amber-200/90 sm:gap-2.5"
-            style={{ textShadow: "0 1px 6px rgba(0,0,0,0.4)" }}
-            aria-label={link.label}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-4.5 w-4.5 fill-current transition-transform duration-500 group-hover:scale-110"
-              aria-hidden="true"
-            >
-              <path d={link.icon} />
-            </svg>
-            <span className="text-sm font-light tracking-wider">{link.label}</span>
-          </a>
-        ))}
-      </div>
-
-      {/* Resume download + audio control */}
-      <div className="flex items-center gap-4">
-        <a
-          href="/resume.pdf"
-          download
-          className="text-glow-hover rounded-full border border-white/10 px-8 py-3 text-xs font-light tracking-[0.2em] text-white/60 uppercase transition-all duration-500 hover:border-amber-200/30 hover:text-amber-200/80 hover:shadow-[0_0_30px_rgba(200,180,60,0.08)]"
+        <h1
+          className="font-display text-glow mb-4 text-5xl font-light tracking-wide text-white/95 sm:text-6xl md:text-8xl"
+          style={{ textShadow: "0 2px 12px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3)" }}
         >
-          Download Resume
-        </a>
-        <button
-            onClick={onToggleAudio}
-            aria-label={audioMuted ? "Unmute ambient audio" : "Mute ambient audio"}
-            className="rounded-full border border-white/10 p-3 text-white/60 transition-all duration-500 hover:border-amber-200/30 hover:text-amber-200/80 hover:shadow-[0_0_30px_rgba(200,180,60,0.08)]"
-            style={{ cursor: "pointer" }}
+          Sean Ippolito
+        </h1>
+        <p
+          className="text-glow mb-8 text-sm font-light tracking-widest text-white/60 uppercase sm:mb-12 sm:text-base md:text-lg"
+          style={{ textShadow: "0 1px 8px rgba(0,0,0,0.5)" }}
+        >
+          I build elegant software and playful experiences
+        </p>
+
+        {/* Social links */}
+        <div className="mb-6 flex flex-wrap justify-center gap-4 sm:mb-10 sm:gap-8">
+          {socialLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.url}
+              target={link.url.startsWith("mailto:") ? undefined : "_blank"}
+              rel="noopener noreferrer"
+              className="text-glow-hover group flex items-center gap-2 text-white/60 transition-all duration-500 hover:text-amber-200/90 sm:gap-2.5"
+              style={{ textShadow: "0 1px 6px rgba(0,0,0,0.4)" }}
+              aria-label={link.label}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4.5 w-4.5 fill-current transition-transform duration-500 group-hover:scale-110"
+                aria-hidden="true"
+              >
+                <path d={link.icon} />
+              </svg>
+              <span className="text-sm font-light tracking-wider">{link.label}</span>
+            </a>
+          ))}
+        </div>
+
+        {/* Resume download + audio control */}
+        <div className="flex items-center gap-4">
+          <a
+            href="/resume.pdf"
+            download
+            className="text-glow-hover rounded-full border border-white/10 px-8 py-3 text-xs font-light tracking-[0.2em] text-white/60 uppercase transition-all duration-500 hover:border-amber-200/30 hover:text-amber-200/80 hover:shadow-[0_0_30px_rgba(200,180,60,0.08)]"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-              {audioMuted ? (
-                <>
-                  <line x1="23" y1="9" x2="17" y2="15" />
-                  <line x1="17" y1="9" x2="23" y2="15" />
-                </>
-              ) : (
-                <>
-                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                </>
-              )}
-            </svg>
-          </button>
+            Download Resume
+          </a>
+          <button
+              onClick={onToggleAudio}
+              aria-label={audioMuted ? "Unmute ambient audio" : "Mute ambient audio"}
+              className="rounded-full border border-white/10 p-3 text-white/60 transition-all duration-500 hover:border-amber-200/30 hover:text-amber-200/80 hover:shadow-[0_0_30px_rgba(200,180,60,0.08)]"
+              style={{ cursor: "pointer" }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                {audioMuted ? (
+                  <>
+                    <line x1="23" y1="9" x2="17" y2="15" />
+                    <line x1="17" y1="9" x2="23" y2="15" />
+                  </>
+                ) : (
+                  <>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                  </>
+                )}
+              </svg>
+            </button>
+        </div>
       </div>
     </div>
   )

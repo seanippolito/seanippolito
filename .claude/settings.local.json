@@ -15,7 +15,9 @@
       "mcp__plugin_figma_figma__get_screenshot",
       "Bash(python:*)",
       "mcp__plugin_playwright_playwright__browser_click",
-      "mcp__plugin_playwright_playwright__browser_press_key"
+      "mcp__plugin_playwright_playwright__browser_press_key",
+      "mcp__plugin_playwright_playwright__browser_console_messages",
+      "mcp__plugin_playwright_playwright__browser_resize"
     ]
   }
 }

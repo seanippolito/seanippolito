@@ -187,6 +187,7 @@ function App() {
       <CenterContent
         audioMuted={audio.muted}
         onToggleAudio={audio.toggleMute}
+        currentScene={currentScene}
       />
       {!gameActive && (
         <NavigationHub

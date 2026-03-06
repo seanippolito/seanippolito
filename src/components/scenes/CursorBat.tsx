@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react"
 import { useIsMobile } from "../../hooks/useIsMobile"
+import { useTouchActive } from "../../hooks/useTouchActive"
 
 const COUNT = 10
 const ORBIT_RADIUS = 50
@@ -8,18 +9,22 @@ interface BatState {
   x: number
   y: number
   wingPhase: number
+  scatterVx: number
+  scatterVy: number
 }
 
 function initSwarm(): BatState[] {
-  return Array.from({ length: COUNT }, () => ({ x: -100, y: -100, wingPhase: 0 }))
+  return Array.from({ length: COUNT }, () => ({ x: -100, y: -100, wingPhase: 0, scatterVx: 0, scatterVy: 0 }))
 }
 
 export function CursorBat() {
   const isMobile = useIsMobile()
+  const { active, scattering } = useTouchActive()
   const swarmRef = useRef<BatState[]>(initSwarm())
   const targetRef = useRef({ x: -100, y: -100 })
   const rafRef = useRef(0)
   const [swarm, setSwarm] = useState<BatState[]>(initSwarm)
+  const scatterStartedRef = useRef(false)
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -39,13 +44,20 @@ export function CursorBat() {
       const s = swarmRef.current
 
       for (let i = 0; i < COUNT; i++) {
-        const angle = (i / COUNT) * Math.PI * 2 + time * (0.4 + i * 0.04)
-        const wobble = Math.sin(time * 1.5 + i * 2.1) * 12
-        const radius = ORBIT_RADIUS + wobble
-        const goalX = t.x + Math.cos(angle) * radius
-        const goalY = t.y + Math.sin(angle) * radius * 0.6 // flatter orbit
-        s[i].x += (goalX - s[i].x) * (0.035 + i * 0.004)
-        s[i].y += (goalY - s[i].y) * (0.035 + i * 0.004)
+        if (s[i].scatterVx !== 0 || s[i].scatterVy !== 0) {
+          s[i].x += s[i].scatterVx
+          s[i].y += s[i].scatterVy
+          s[i].scatterVx *= 0.95
+          s[i].scatterVy *= 0.95
+        } else {
+          const angle = (i / COUNT) * Math.PI * 2 + time * (0.4 + i * 0.04)
+          const wobble = Math.sin(time * 1.5 + i * 2.1) * 12
+          const radius = ORBIT_RADIUS + wobble
+          const goalX = t.x + Math.cos(angle) * radius
+          const goalY = t.y + Math.sin(angle) * radius * 0.6
+          s[i].x += (goalX - s[i].x) * (0.035 + i * 0.004)
+          s[i].y += (goalY - s[i].y) * (0.035 + i * 0.004)
+        }
         s[i].wingPhase = time * (7 + i * 0.5)
       }
 
@@ -60,6 +72,35 @@ export function CursorBat() {
       cancelAnimationFrame(rafRef.current)
     }
   }, [])
+
+  // Assign scatter velocities when scattering begins
+  useEffect(() => {
+    if (scattering && !scatterStartedRef.current) {
+      scatterStartedRef.current = true
+      const s = swarmRef.current
+      for (let i = 0; i < COUNT; i++) {
+        const angle = Math.random() * Math.PI * 2
+        const speed = 4 + Math.random() * 6
+        s[i].scatterVx = Math.cos(angle) * speed
+        s[i].scatterVy = Math.sin(angle) * speed
+      }
+    }
+    if (!scattering) scatterStartedRef.current = false
+  }, [scattering])
+
+  // Reset when touch fully ends
+  useEffect(() => {
+    if (!active && !scattering) {
+      const s = swarmRef.current
+      for (let i = 0; i < COUNT; i++) {
+        s[i].scatterVx = 0
+        s[i].scatterVy = 0
+        s[i].x = -100
+        s[i].y = -100
+      }
+      targetRef.current = { x: -100, y: -100 }
+    }
+  }, [active, scattering])
 
   // Track actual cursor for the gem
   const [cursor, setCursor] = useState({ x: -100, y: -100 })
@@ -77,12 +118,13 @@ export function CursorBat() {
       window.removeEventListener("touchmove", onTouch)
     }
   }, [])
-  // Smooth the gem position slightly
   const cs = cursorSmoothRef.current
   cs.x += (cursor.x - cs.x) * 0.3
   cs.y += (cursor.y - cs.y) * 0.3
 
-  if (isMobile) return null
+  if (isMobile && !active && !scattering) return null
+
+  const scatterOpacity = scattering ? 0.3 : 1
 
   return (
     <div className="pointer-events-none fixed inset-0 z-50">
@@ -95,6 +137,8 @@ export function CursorBat() {
           width: 20,
           height: 24,
           willChange: "transform",
+          opacity: scattering ? 0 : 1,
+          transition: "opacity 0.3s",
         }}
       >
         <svg width="20" height="24" viewBox="0 0 20 24">
@@ -116,15 +160,10 @@ export function CursorBat() {
             </filter>
           </defs>
           <g filter="url(#gem-glow)">
-            {/* Outer glow */}
             <polygon points="10,0 18,8 10,24 2,8" fill="rgba(239,68,68,0.3)" />
-            {/* Left facet */}
             <polygon points="10,0 2,8 10,24" fill="url(#gem-face-l)" />
-            {/* Right facet */}
             <polygon points="10,0 18,8 10,24" fill="url(#gem-face-r)" />
-            {/* Top highlight */}
             <polygon points="10,1 5,7 10,10 15,7" fill="rgba(255,200,200,0.4)" />
-            {/* Center sparkle */}
             <polygon points="10,5 8,8 10,11 12,8" fill="rgba(255,255,255,0.5)">
               <animate attributeName="opacity" values="0.5;0.2;0.5" dur="2s" repeatCount="indefinite" />
             </polygon>
@@ -144,27 +183,23 @@ export function CursorBat() {
               width: 28 * scale,
               height: 16 * scale,
               willChange: "transform",
+              opacity: scattering ? scatterOpacity : 1,
+              transition: scattering ? "opacity 0.5s" : undefined,
             }}
           >
             <svg width={28 * scale} height={16 * scale} viewBox="0 0 28 16">
-              {/* Left wing */}
               <path
                 d={`M14 8 Q${8 - ws * 0.5} ${4 - ws * 0.3}, ${2 - ws * 0.3} ${6 - ws * 0.5} Q${6} ${8}, 14 8`}
                 fill="rgba(30,8,8,0.8)"
               />
-              {/* Right wing */}
               <path
                 d={`M14 8 Q${20 + ws * 0.5} ${4 - ws * 0.3}, ${26 + ws * 0.3} ${6 - ws * 0.5} Q${22} ${8}, 14 8`}
                 fill="rgba(30,8,8,0.8)"
               />
-              {/* Body */}
               <ellipse cx="14" cy="8" rx="1.8" ry="3" fill="rgba(20,5,5,0.9)" />
-              {/* Head */}
               <circle cx="14" cy="5" r="1.8" fill="rgba(20,5,5,0.9)" />
-              {/* Ears */}
               <path d="M12.8 3.8 L11.8 1.5 L13.2 3.3" fill="rgba(20,5,5,0.85)" />
               <path d="M15.2 3.8 L16.2 1.5 L14.8 3.3" fill="rgba(20,5,5,0.85)" />
-              {/* Eyes */}
               <circle cx="13.3" cy="4.5" r="0.5" fill="#ea580c" opacity="0.9" />
               <circle cx="14.7" cy="4.5" r="0.5" fill="#ea580c" opacity="0.9" />
             </svg>

@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react"
 import { useIsMobile } from "../../hooks/useIsMobile"
+import { useTouchActive } from "../../hooks/useTouchActive"
 
 interface Spark {
   x: number
@@ -35,11 +36,18 @@ function initSparks(): Spark[] {
 
 export function CursorDivineGlow() {
   const isMobile = useIsMobile()
+  const { active, scattering } = useTouchActive()
   const sparksRef = useRef<Spark[]>(initSparks())
   const mouseRef = useRef({ x: 0, y: 0, prevX: 0, prevY: 0 })
   const rafRef = useRef(0)
   const spawnIndexRef = useRef(0)
   const [, forceRender] = useState(0)
+  const canSpawnRef = useRef(true)
+
+  // On mobile, only spawn while actively touching (not scattering)
+  useEffect(() => {
+    canSpawnRef.current = !isMobile || (active && !scattering)
+  }, [isMobile, active, scattering])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -69,8 +77,8 @@ export function CursorDivineGlow() {
       const dy = m.y - m.prevY
       const speed = Math.sqrt(dx * dx + dy * dy)
 
-      // Spawn sparks when mouse moves
-      if (speed > 2) {
+      // Spawn sparks when mouse moves (and spawning is allowed)
+      if (speed > 2 && canSpawnRef.current) {
         const count = Math.min(3, Math.floor(speed / 8) + 1)
         for (let c = 0; c < count; c++) {
           const s = sparksRef.current[spawnIndexRef.current]
@@ -115,8 +123,6 @@ export function CursorDivineGlow() {
       cancelAnimationFrame(rafRef.current)
     }
   }, [])
-
-  if (isMobile) return null
 
   return (
     <div className="pointer-events-none absolute inset-0 z-30">

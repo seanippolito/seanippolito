@@ -1,4 +1,6 @@
 import { useRef, useEffect, useState } from "react"
+import { useIsMobile } from "../../hooks/useIsMobile"
+import { useTouchActive } from "../../hooks/useTouchActive"
 
 interface Ember {
   x: number
@@ -29,11 +31,19 @@ function initEmbers(): Ember[] {
 }
 
 export function EmberTrail() {
+  const isMobile = useIsMobile()
+  const { active, scattering } = useTouchActive()
   const embersRef = useRef<Ember[]>(initEmbers())
   const mouseRef = useRef({ x: 0, y: 0, prevX: 0, prevY: 0 })
   const rafRef = useRef(0)
   const spawnIndexRef = useRef(0)
   const [, forceRender] = useState(0)
+  const canSpawnRef = useRef(true)
+
+  // On mobile, only spawn while actively touching (not scattering)
+  useEffect(() => {
+    canSpawnRef.current = !isMobile || (active && !scattering)
+  }, [isMobile, active, scattering])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -63,8 +73,8 @@ export function EmberTrail() {
       const dy = m.y - m.prevY
       const speed = Math.sqrt(dx * dx + dy * dy)
 
-      // Spawn embers when mouse moves
-      if (speed > 2) {
+      // Spawn embers when mouse moves (and spawning is allowed)
+      if (speed > 2 && canSpawnRef.current) {
         const count = Math.min(3, Math.floor(speed / 8) + 1)
         for (let c = 0; c < count; c++) {
           const e = embersRef.current[spawnIndexRef.current]

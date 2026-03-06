@@ -323,6 +323,64 @@ export const BeachScene = memo(function BeachScene({ onMouseXChange }: BeachScen
             <path d="M-16 2 L27 -6 L40 -33 L35 -33Z" fill="rgba(50,130,210,0.35)" />
           </g>
 
+          {/* Beach towel with baby — right side of sand */}
+          <g transform="translate(1050, 800) rotate(-8)">
+            {/* Towel — coral & teal stripes, slightly rumpled */}
+            <rect x="-55" y="-30" width="110" height="65" rx="3" fill="#0d9488" opacity="0.8" />
+            <rect x="-55" y="-30" width="110" height="8" fill="#f87171" opacity="0.8" />
+            <rect x="-55" y="-22" width="110" height="5" fill="#1a1a1a" opacity="0.8" />
+            <rect x="-55" y="-17" width="110" height="10" fill="#0d9488" opacity="0.8" />
+            <rect x="-55" y="-7" width="110" height="5" fill="#1a1a1a" opacity="0.8" />
+            <rect x="-55" y="-2" width="110" height="10" fill="#f87171" opacity="0.8" />
+            <rect x="-55" y="8" width="110" height="5" fill="#1a1a1a" opacity="0.8" />
+            <rect x="-55" y="13" width="110" height="10" fill="#0d9488" opacity="0.8" />
+            <rect x="-55" y="23" width="110" height="5" fill="#f87171" opacity="0.8" />
+            <rect x="-55" y="28" width="110" height="7" fill="#1a1a1a" opacity="0.8" />
+            {/* Towel fringe */}
+            {Array.from({ length: 10 }).map((_, i) => (
+              <line key={`tf-${i}`} x1={-50 + i * 11} y1="-30" x2={-50 + i * 11 + (i % 2 ? 1 : -1)} y2="-34" stroke="#0d9488" strokeWidth="1" opacity="0.5" />
+            ))}
+            {Array.from({ length: 10 }).map((_, i) => (
+              <line key={`tb-${i}`} x1={-50 + i * 11} y1="35" x2={-50 + i * 11 + (i % 2 ? 1 : -1)} y2="39" stroke="#0d9488" strokeWidth="1" opacity="0.5" />
+            ))}
+            {/* Baby — lying on towel, cute round shape */}
+            {/* Body — round onesie */}
+            <ellipse cx="5" cy="2" rx="14" ry="11" fill="rgba(255,230,210,0.9)" />
+            {/* Onesie — soft yellow */}
+            <ellipse cx="5" cy="4" rx="12" ry="9" fill="rgba(255,240,180,0.85)" />
+            {/* Head — round with tuft of hair */}
+            <circle cx="5" cy="-10" r="9" fill="rgba(255,225,200,0.95)" />
+            {/* Hair tuft */}
+            <path d="M2 -18 Q5 -22 8 -18" fill="none" stroke="rgba(160,110,60,0.6)" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M0 -17 Q3 -20 5 -18" fill="none" stroke="rgba(160,110,60,0.5)" strokeWidth="1" strokeLinecap="round" />
+            {/* Eyes — closed, sleeping */}
+            <path d="M1 -11 Q3 -9 5 -11" fill="none" stroke="rgba(80,50,30,0.5)" strokeWidth="0.8" />
+            <path d="M6 -11 Q8 -9 10 -11" fill="none" stroke="rgba(80,50,30,0.5)" strokeWidth="0.8" />
+            {/* Rosy cheeks */}
+            <circle cx="-1" cy="-8" r="2.5" fill="rgba(255,150,150,0.3)" />
+            <circle cx="11" cy="-8" r="2.5" fill="rgba(255,150,150,0.3)" />
+            {/* Tiny mouth — content smile */}
+            <path d="M4 -7 Q5.5 -5.5 7 -7" fill="none" stroke="rgba(200,120,100,0.4)" strokeWidth="0.6" />
+            {/* Little arms */}
+            <ellipse cx="-8" cy="0" rx="5" ry="3" fill="rgba(255,225,200,0.85)" transform="rotate(-20 -8 0)" />
+            <ellipse cx="18" cy="0" rx="5" ry="3" fill="rgba(255,225,200,0.85)" transform="rotate(20 18 0)" />
+            {/* Little feet */}
+            <circle cx="-2" cy="13" r="3.5" fill="rgba(255,225,200,0.8)" />
+            <circle cx="12" cy="13" r="3.5" fill="rgba(255,225,200,0.8)" />
+            {/* Baby bottle nearby */}
+            <g transform="translate(28, 8) rotate(25)">
+              <rect x="-2" y="-8" width="4" height="12" rx="2" fill="rgba(220,240,255,0.7)" />
+              <rect x="-1.5" y="-11" width="3" height="4" rx="1" fill="rgba(255,200,150,0.6)" />
+              <rect x="-2" y="-1" width="4" height="3" fill="rgba(200,230,255,0.5)" />
+            </g>
+            {/* Tiny sun hat next to baby */}
+            <g transform="translate(-30, -5)">
+              <ellipse cx="0" cy="0" rx="12" ry="4" fill="rgba(255,240,200,0.7)" />
+              <ellipse cx="0" cy="-2" rx="7" ry="5" fill="rgba(255,235,180,0.75)" />
+              <path d="M-5 -5 Q0 -8 5 -5" fill="none" stroke="rgba(240,180,100,0.4)" strokeWidth="0.8" />
+            </g>
+          </g>
+
           {/* Scattered shells and starfish */}
           {/* Starfish 1 — orange */}
           <g transform="translate(480, 830) scale(2.5)" opacity="0.55">

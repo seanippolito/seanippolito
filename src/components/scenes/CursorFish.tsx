@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react"
 import { useIsMobile } from "../../hooks/useIsMobile"
+import { useTouchActive } from "../../hooks/useTouchActive"
 
 const COUNT = 10
 const ORBIT_RADIUS = 45
@@ -9,18 +10,22 @@ const FISH_COLORS = ["#fb923c", "#fbbf24", "#60b5d4", "#f472b6", "#34d399"]
 interface FishState {
   x: number
   y: number
+  scatterVx: number
+  scatterVy: number
 }
 
 function initSwarm(): FishState[] {
-  return Array.from({ length: COUNT }, () => ({ x: -100, y: -100 }))
+  return Array.from({ length: COUNT }, () => ({ x: -100, y: -100, scatterVx: 0, scatterVy: 0 }))
 }
 
 export function CursorFish() {
   const isMobile = useIsMobile()
+  const { active, scattering } = useTouchActive()
   const swarmRef = useRef<FishState[]>(initSwarm())
   const targetRef = useRef({ x: -100, y: -100 })
   const rafRef = useRef(0)
   const [swarm, setSwarm] = useState<FishState[]>(initSwarm)
+  const scatterStartedRef = useRef(false)
 
   // Smooth cursor for gem
   const [cursor, setCursor] = useState({ x: -100, y: -100 })
@@ -44,6 +49,21 @@ export function CursorFish() {
   cs.x += (cursor.x - cs.x) * 0.3
   cs.y += (cursor.y - cs.y) * 0.3
 
+  // Assign scatter velocities when scattering begins
+  useEffect(() => {
+    if (scattering && !scatterStartedRef.current) {
+      scatterStartedRef.current = true
+      const s = swarmRef.current
+      for (let i = 0; i < COUNT; i++) {
+        const angle = Math.random() * Math.PI * 2
+        const speed = 4 + Math.random() * 6
+        s[i].scatterVx = Math.cos(angle) * speed
+        s[i].scatterVy = Math.sin(angle) * speed
+      }
+    }
+    if (!scattering) scatterStartedRef.current = false
+  }, [scattering])
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       targetRef.current = { x: e.clientX, y: e.clientY }
@@ -62,13 +82,20 @@ export function CursorFish() {
       const s = swarmRef.current
 
       for (let i = 0; i < COUNT; i++) {
-        const angle = (i / COUNT) * Math.PI * 2 + time * (0.4 + i * 0.03)
-        const wobble = Math.sin(time * 1.5 + i * 1.3) * 10
-        const radius = ORBIT_RADIUS + wobble
-        const goalX = t.x + Math.cos(angle) * radius
-        const goalY = t.y + Math.sin(angle) * radius
-        s[i].x += (goalX - s[i].x) * (0.035 + i * 0.004)
-        s[i].y += (goalY - s[i].y) * (0.035 + i * 0.004)
+        if (s[i].scatterVx !== 0 || s[i].scatterVy !== 0) {
+          s[i].x += s[i].scatterVx
+          s[i].y += s[i].scatterVy
+          s[i].scatterVx *= 0.95
+          s[i].scatterVy *= 0.95
+        } else {
+          const angle = (i / COUNT) * Math.PI * 2 + time * (0.4 + i * 0.03)
+          const wobble = Math.sin(time * 1.5 + i * 1.3) * 10
+          const radius = ORBIT_RADIUS + wobble
+          const goalX = t.x + Math.cos(angle) * radius
+          const goalY = t.y + Math.sin(angle) * radius
+          s[i].x += (goalX - s[i].x) * (0.035 + i * 0.004)
+          s[i].y += (goalY - s[i].y) * (0.035 + i * 0.004)
+        }
       }
 
       setSwarm(s.map((a) => ({ ...a })))
@@ -83,7 +110,23 @@ export function CursorFish() {
     }
   }, [])
 
-  if (isMobile) return null
+  // Reset when touch fully ends
+  useEffect(() => {
+    if (!active && !scattering) {
+      const s = swarmRef.current
+      for (let i = 0; i < COUNT; i++) {
+        s[i].scatterVx = 0
+        s[i].scatterVy = 0
+        s[i].x = -100
+        s[i].y = -100
+      }
+      targetRef.current = { x: -100, y: -100 }
+    }
+  }, [active, scattering])
+
+  if (isMobile && !active && !scattering) return null
+
+  const scatterOpacity = scattering ? 0.3 : 1
 
   return (
     <div className="pointer-events-none fixed inset-0 z-50">
@@ -96,6 +139,8 @@ export function CursorFish() {
           width: 22,
           height: 22,
           willChange: "transform",
+          opacity: scattering ? 0 : 1,
+          transition: "opacity 0.3s",
         }}
       >
         <svg width="22" height="22" viewBox="0 0 22 22">
@@ -119,55 +164,26 @@ export function CursorFish() {
             </filter>
           </defs>
           <g filter="url(#shell-glow)">
-            {/* Outer glow */}
             <ellipse cx="11" cy="11" rx="11" ry="10" fill="rgba(45,212,191,0.15)" />
-            {/* Shell body — fan/spiral shape */}
             <path
               d="M11 3 Q15 4 17 7 Q19 10 18 14 Q16 17 13 18 Q10 19 7 17 Q5 15 4 12 Q3 9 5 6 Q7 4 11 3Z"
               fill="url(#shell-gem)"
             />
-            {/* Shell ridges */}
-            <path
-              d="M11 4 Q11 10 7 16"
-              fill="none"
-              stroke="rgba(255,255,255,0.2)"
-              strokeWidth="0.5"
-            />
-            <path
-              d="M11 4 Q12 10 10 17"
-              fill="none"
-              stroke="rgba(255,255,255,0.15)"
-              strokeWidth="0.5"
-            />
-            <path
-              d="M11 4 Q14 9 14 17"
-              fill="none"
-              stroke="rgba(255,255,255,0.2)"
-              strokeWidth="0.5"
-            />
-            <path
-              d="M11 4 Q16 8 17 14"
-              fill="none"
-              stroke="rgba(255,255,255,0.12)"
-              strokeWidth="0.5"
-            />
-            {/* Spiral hint at apex */}
+            <path d="M11 4 Q11 10 7 16" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+            <path d="M11 4 Q12 10 10 17" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.5" />
+            <path d="M11 4 Q14 9 14 17" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" />
+            <path d="M11 4 Q16 8 17 14" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="0.5" />
             <path
               d="M11 5 Q9 6 9 8 Q9 9 10 9 Q11 9 11 8"
-              fill="none"
-              stroke="rgba(255,255,255,0.25)"
-              strokeWidth="0.4"
+              fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="0.4"
             />
-            {/* Highlight */}
             <path
               d="M9 5 Q11 3 14 5 Q15 7 14 9 Q12 7 10 6 Q9 6 9 5Z"
               fill="url(#shell-shine)"
             />
-            {/* Sparkle */}
             <circle cx="9" cy="7" r="1.2" fill="rgba(255,255,255,0.6)">
               <animate attributeName="opacity" values="0.6;0.2;0.6" dur="1.8s" repeatCount="indefinite" />
             </circle>
-            {/* Small secondary glint */}
             <circle cx="14" cy="13" r="0.8" fill="rgba(255,255,255,0.4)">
               <animate attributeName="opacity" values="0.4;0.1;0.4" dur="2.3s" repeatCount="indefinite" />
             </circle>
@@ -190,16 +206,13 @@ export function CursorFish() {
               width: size,
               height: size,
               willChange: "transform",
+              opacity: scattering ? scatterOpacity : 1,
+              transition: scattering ? "opacity 0.5s" : undefined,
             }}
           >
             <svg width={size} height={size} viewBox="0 0 20 20">
-              {/* Body — oval */}
               <ellipse cx="10" cy="10" rx="5.5" ry="3.5" fill={color} opacity="0.85" />
-
-              {/* Stripe accent */}
               <ellipse cx="10" cy="10" rx="3.5" ry="2" fill="rgba(255,255,255,0.15)" />
-
-              {/* Tail — triangle that wiggles */}
               <polygon points="3,10 0,7 0,13" fill={color} opacity="0.75">
                 <animateTransform
                   attributeName="transform"
@@ -209,8 +222,6 @@ export function CursorFish() {
                   repeatCount="indefinite"
                 />
               </polygon>
-
-              {/* Dorsal fin on top */}
               <polygon points="10,6.5 8,3 12,5" fill={color} opacity="0.7">
                 <animateTransform
                   attributeName="transform"
@@ -220,12 +231,8 @@ export function CursorFish() {
                   repeatCount="indefinite"
                 />
               </polygon>
-
-              {/* Eye */}
               <circle cx="13" cy="9.2" r="1" fill="rgba(0,0,0,0.7)" />
               <circle cx="13.3" cy="8.9" r="0.4" fill="rgba(255,255,255,0.8)" />
-
-              {/* Bubble trail */}
               <circle cx={2 - (i % 2)} cy={10 + (i % 3) - 1} r="0.5" fill="rgba(255,255,255,0.3)">
                 <animate
                   attributeName="opacity"

@@ -1,5 +1,6 @@
 import { memo, useRef, useEffect, useState } from "react"
 import { useIsMobile } from "../../hooks/useIsMobile"
+import { useTouchActive } from "../../hooks/useTouchActive"
 
 /**
  * SnowCursor — replaces the default cursor with a snowball SVG
@@ -40,18 +41,27 @@ function createParticle(): Particle {
 
 export const SnowCursor = memo(function SnowCursor() {
   const isMobile = useIsMobile()
+  const { active, scattering } = useTouchActive()
   const mouseRef = useRef({ x: -100, y: -100, prevX: -100, prevY: -100 })
   const poolRef = useRef<Particle[]>(Array.from({ length: POOL_SIZE }, createParticle))
   const spawnIndexRef = useRef(0)
   const rafRef = useRef(0)
   const [, forceRender] = useState(0)
+  const canSpawnRef = useRef(true)
+
+  // On mobile, only spawn while actively touching (not scattering)
+  useEffect(() => {
+    canSpawnRef.current = !isMobile || (active && !scattering)
+  }, [isMobile, active, scattering])
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
     if (motionQuery.matches) return
 
-    // Hide default cursor on the whole page
-    document.body.style.cursor = "none"
+    // Hide default cursor on desktop only
+    if (!isMobile) {
+      document.body.style.cursor = "none"
+    }
 
     const handleMove = (x: number, y: number) => {
       mouseRef.current.prevX = mouseRef.current.x
@@ -76,8 +86,8 @@ export const SnowCursor = memo(function SnowCursor() {
       const speed = Math.sqrt(dx * dx + dy * dy)
       const pool = poolRef.current
 
-      // Spawn particles when moving fast enough
-      if (speed > 2.5) {
+      // Spawn particles when moving fast enough (and spawning is allowed)
+      if (speed > 2.5 && canSpawnRef.current) {
         const count = Math.min(3, Math.floor(speed / 10) + 1)
         for (let i = 0; i < count; i++) {
           const p = pool[spawnIndexRef.current]
@@ -151,14 +161,14 @@ export const SnowCursor = memo(function SnowCursor() {
       cancelAnimationFrame(rafRef.current)
       window.removeEventListener("mousemove", onMouse)
       window.removeEventListener("touchmove", onTouch)
-      document.body.style.cursor = ""
+      if (!isMobile) {
+        document.body.style.cursor = ""
+      }
     }
-  }, [])
+  }, [isMobile])
 
   const m = mouseRef.current
   const pool = poolRef.current
-
-  if (isMobile) return null
 
   return (
     <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">

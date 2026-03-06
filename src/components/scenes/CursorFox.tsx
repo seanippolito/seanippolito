@@ -1,5 +1,6 @@
 import { memo, useRef, useEffect, useState } from "react"
 import { useIsMobile } from "../../hooks/useIsMobile"
+import { useTouchActive } from "../../hooks/useTouchActive"
 
 interface FoxState {
   x: number
@@ -153,6 +154,7 @@ function FoxSitting({ size, facingRight }: { size: number; facingRight: boolean 
 
 export const CursorFox = memo(function CursorFox() {
   const isMobile = useIsMobile()
+  const { active, scattering } = useTouchActive()
   const prefersReducedMotion =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -164,8 +166,35 @@ export const CursorFox = memo(function CursorFox() {
   const legPhaseRef = useRef(0)
   const movingTimerRef = useRef(0)
   const isMovingRef = useRef(false)
+  const scatteringRef = useRef(false)
+  const scatterStartedRef = useRef(false)
 
   const [foxes, setFoxes] = useState<FoxState[]>(initFoxes)
+
+  // Track scatter state for the RAF loop
+  useEffect(() => {
+    scatteringRef.current = scattering
+    if (scattering && !scatterStartedRef.current) {
+      scatterStartedRef.current = true
+      // Make foxes run — set isMoving so legs animate during scatter
+      isMovingRef.current = true
+    }
+    if (!scattering) scatterStartedRef.current = false
+  }, [scattering])
+
+  // Reset when touch fully ends
+  useEffect(() => {
+    if (!active && !scattering) {
+      const f = foxesRef.current
+      for (let i = 0; i < FOX_CONFIGS.length; i++) {
+        f[i].x = -200
+        f[i].y = -200
+        f[i].trail = []
+      }
+      targetRef.current = { x: -200, y: -200 }
+      prevTargetRef.current = { x: -200, y: -200 }
+    }
+  }, [active, scattering])
 
   useEffect(() => {
     if (prefersReducedMotion) return
@@ -198,10 +227,11 @@ export const CursorFox = memo(function CursorFox() {
     const animate = () => {
       const t = targetRef.current
       const moving = isMovingRef.current
+      const isScattering = scatteringRef.current
       const f = foxesRef.current
 
       // Advance leg phase when running
-      if (moving) {
+      if (moving || isScattering) {
         legPhaseRef.current += 0.35
       }
 
@@ -213,22 +243,29 @@ export const CursorFox = memo(function CursorFox() {
         const cfg = FOX_CONFIGS[i]
         const fox = f[i]
 
-        // Goal is behind the cursor by lag amount, offset sideways
-        const lagDir = facingRight ? -1 : 1
-        const goalX = t.x + lagDir * cfg.lag + cfg.offsetX
-        const goalY = t.y
+        if (isScattering) {
+          // Run off-screen in current facing direction
+          const runDir = fox.facingRight ? 1 : -1
+          fox.x += runDir * (8 + i * 2)
+          fox.isRunning = true
+        } else {
+          // Goal is behind the cursor by lag amount, offset sideways
+          const lagDir = facingRight ? -1 : 1
+          const goalX = t.x + lagDir * cfg.lag + cfg.offsetX
+          const goalY = t.y
 
-        const prevX = fox.x
-        fox.x += (goalX - fox.x) * cfg.smoothing
-        fox.y += (goalY - fox.y) * cfg.smoothing
+          const prevX = fox.x
+          fox.x += (goalX - fox.x) * cfg.smoothing
+          fox.y += (goalY - fox.y) * cfg.smoothing
 
-        // Determine individual fox facing direction by its own movement
-        const foxDx = fox.x - prevX
-        if (Math.abs(foxDx) > 0.1) {
-          fox.facingRight = foxDx > 0
+          // Determine individual fox facing direction by its own movement
+          const foxDx = fox.x - prevX
+          if (Math.abs(foxDx) > 0.1) {
+            fox.facingRight = foxDx > 0
+          }
+
+          fox.isRunning = moving
         }
-
-        fox.isRunning = moving
 
         // Update frost trail
         const trailEntry = { x: fox.x, y: fox.y, opacity: 0.6 }
@@ -259,7 +296,7 @@ export const CursorFox = memo(function CursorFox() {
     }
   }, [prefersReducedMotion])
 
-  if (isMobile) return null
+  if (isMobile && !active && !scattering) return null
   if (prefersReducedMotion) return null
 
   const FOX_SIZE = 28

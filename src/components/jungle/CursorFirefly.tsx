@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react"
 import { useIsMobile } from "../../hooks/useIsMobile"
+import { useTouchActive } from "../../hooks/useTouchActive"
 
 const COUNT = 10
 const ORBIT_RADIUS = 40
@@ -7,18 +8,22 @@ const ORBIT_RADIUS = 40
 interface FireflyState {
   x: number
   y: number
+  scatterVx: number
+  scatterVy: number
 }
 
 function initSwarm(): FireflyState[] {
-  return Array.from({ length: COUNT }, () => ({ x: -100, y: -100 }))
+  return Array.from({ length: COUNT }, () => ({ x: -100, y: -100, scatterVx: 0, scatterVy: 0 }))
 }
 
 export function CursorFirefly() {
   const isMobile = useIsMobile()
+  const { active, scattering } = useTouchActive()
   const swarmRef = useRef<FireflyState[]>(initSwarm())
   const targetRef = useRef({ x: -100, y: -100 })
   const rafRef = useRef(0)
   const [swarm, setSwarm] = useState<FireflyState[]>(initSwarm)
+  const scatterStartedRef = useRef(false)
 
   // Track cursor for gem
   const [cursor, setCursor] = useState({ x: -100, y: -100 })
@@ -42,6 +47,23 @@ export function CursorFirefly() {
   cs.x += (cursor.x - cs.x) * 0.3
   cs.y += (cursor.y - cs.y) * 0.3
 
+  // Assign random scatter velocities when scattering begins
+  useEffect(() => {
+    if (scattering && !scatterStartedRef.current) {
+      scatterStartedRef.current = true
+      const s = swarmRef.current
+      for (let i = 0; i < COUNT; i++) {
+        const angle = Math.random() * Math.PI * 2
+        const speed = 4 + Math.random() * 6
+        s[i].scatterVx = Math.cos(angle) * speed
+        s[i].scatterVy = Math.sin(angle) * speed
+      }
+    }
+    if (!scattering) {
+      scatterStartedRef.current = false
+    }
+  }, [scattering])
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       targetRef.current = { x: e.clientX, y: e.clientY }
@@ -60,13 +82,21 @@ export function CursorFirefly() {
       const s = swarmRef.current
 
       for (let i = 0; i < COUNT; i++) {
-        const angle = (i / COUNT) * Math.PI * 2 + time * (0.5 + i * 0.05)
-        const wobble = Math.sin(time * 2 + i * 1.7) * 8
-        const radius = ORBIT_RADIUS + wobble
-        const goalX = t.x + Math.cos(angle) * radius
-        const goalY = t.y + Math.sin(angle) * radius
-        s[i].x += (goalX - s[i].x) * (0.04 + i * 0.005)
-        s[i].y += (goalY - s[i].y) * (0.04 + i * 0.005)
+        if (s[i].scatterVx !== 0 || s[i].scatterVy !== 0) {
+          // Scattering: fly outward
+          s[i].x += s[i].scatterVx
+          s[i].y += s[i].scatterVy
+          s[i].scatterVx *= 0.95
+          s[i].scatterVy *= 0.95
+        } else {
+          const angle = (i / COUNT) * Math.PI * 2 + time * (0.5 + i * 0.05)
+          const wobble = Math.sin(time * 2 + i * 1.7) * 8
+          const radius = ORBIT_RADIUS + wobble
+          const goalX = t.x + Math.cos(angle) * radius
+          const goalY = t.y + Math.sin(angle) * radius
+          s[i].x += (goalX - s[i].x) * (0.04 + i * 0.005)
+          s[i].y += (goalY - s[i].y) * (0.04 + i * 0.005)
+        }
       }
 
       setSwarm(s.map(f => ({ ...f })))
@@ -81,7 +111,25 @@ export function CursorFirefly() {
     }
   }, [])
 
-  if (isMobile) return null
+  // Reset scatter velocities and positions when touch ends completely
+  useEffect(() => {
+    if (!active && !scattering) {
+      const s = swarmRef.current
+      for (let i = 0; i < COUNT; i++) {
+        s[i].scatterVx = 0
+        s[i].scatterVy = 0
+        s[i].x = -100
+        s[i].y = -100
+      }
+      targetRef.current = { x: -100, y: -100 }
+    }
+  }, [active, scattering])
+
+  // On mobile, only render while touching or scattering
+  if (isMobile && !active && !scattering) return null
+
+  // Compute scatter opacity for fade-out during scatter phase
+  const scatterOpacity = scattering ? 0.3 : 1
 
   return (
     <div className="pointer-events-none fixed inset-0 z-50">
@@ -94,6 +142,8 @@ export function CursorFirefly() {
           width: 20,
           height: 24,
           willChange: "transform",
+          opacity: scattering ? 0 : 1,
+          transition: "opacity 0.3s",
         }}
       >
         <svg width="20" height="24" viewBox="0 0 20 24">
@@ -138,6 +188,8 @@ export function CursorFirefly() {
               width: size,
               height: size,
               willChange: "transform",
+              opacity: scattering ? scatterOpacity : 1,
+              transition: scattering ? "opacity 0.5s" : undefined,
             }}
           >
             <svg width={size} height={size} viewBox="0 0 12 12">
