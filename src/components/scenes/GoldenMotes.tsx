@@ -13,7 +13,8 @@ interface MoteParticle {
   twinkleSpeed: number
 }
 
-const MOTE_COUNT = 45
+const isMobile = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
+const MOTE_COUNT = isMobile ? 15 : 45
 
 function spawnMote(randomY = false): MoteParticle {
   const size = 1.5 + Math.random() * 2.5

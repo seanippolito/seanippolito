@@ -21,6 +21,7 @@ export function useMouseParallax(options: UseMouseParallaxOptions = {}) {
   const currentRef = useRef<ParallaxOffset>({ x: 0, y: 0 })
   const rafRef = useRef<number>(0)
   const permissionRequestedRef = useRef(false)
+  const frameCountRef = useRef(0)
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -96,12 +97,24 @@ export function useMouseParallax(options: UseMouseParallaxOptions = {}) {
       window.addEventListener("mousemove", handleMouseMove)
     }
 
+    const mobileDevice = mobile
+
     const animate = () => {
       const current = currentRef.current
       const target = targetRef.current
       current.x += (target.x - current.x) * smoothing
       current.y += (target.y - current.y) * smoothing
-      setOffset({ x: current.x, y: current.y })
+
+      // On mobile, only update React state every 3rd frame (~20fps) to reduce re-renders
+      if (mobileDevice) {
+        frameCountRef.current++
+        if (frameCountRef.current % 3 === 0) {
+          setOffset({ x: current.x, y: current.y })
+        }
+      } else {
+        setOffset({ x: current.x, y: current.y })
+      }
+
       rafRef.current = requestAnimationFrame(animate)
     }
     rafRef.current = requestAnimationFrame(animate)

@@ -46,11 +46,11 @@ export const FallingSnow = memo(function FallingSnow({
   const prefersReducedMotion =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const flakesRef = useRef<Snowflake[]>([]);
   const rafRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
+  const lastDrawTimeRef = useRef<number>(0);
   const windRef = useRef<number>(windIntensity);
 
   useEffect(() => {
@@ -73,7 +73,9 @@ export const FallingSnow = memo(function FallingSnow({
     resize();
     window.addEventListener("resize", resize);
 
-    const totalFlakes = 150 + Math.floor(Math.random() * 51);
+    const mobile = window.matchMedia("(pointer: coarse)").matches;
+    const mobileScale = mobile ? 0.35 : 1;
+    const totalFlakes = Math.floor((150 + Math.floor(Math.random() * 51)) * mobileScale);
     const farCount = Math.floor(totalFlakes * 0.6);
     const nearCount = totalFlakes - farCount;
 
@@ -88,7 +90,16 @@ export const FallingSnow = memo(function FallingSnow({
 
     const blizzardFlakes: Snowflake[] = [];
 
+    const blizzardMax = Math.floor(60 * (mobile ? 0.3 : 1));
+
     const draw = (timestamp: number) => {
+      // Throttle to ~30fps on mobile
+      if (mobile && timestamp - lastDrawTimeRef.current < 33) {
+        rafRef.current = requestAnimationFrame(draw);
+        return;
+      }
+      lastDrawTimeRef.current = timestamp;
+
       const delta = lastTimeRef.current === 0
         ? 0.016
         : (timestamp - lastTimeRef.current) / 1000;
@@ -103,8 +114,8 @@ export const FallingSnow = memo(function FallingSnow({
           ? [...flakesRef.current, ...blizzardFlakes]
           : flakesRef.current;
 
-      if (wind > 0.7 && blizzardFlakes.length < 60) {
-        const needed = 60 - blizzardFlakes.length;
+      if (wind > 0.7 && blizzardFlakes.length < blizzardMax) {
+        const needed = blizzardMax - blizzardFlakes.length;
         const toAdd = Math.min(needed, 3);
         for (let i = 0; i < toAdd; i++) {
           blizzardFlakes.push(

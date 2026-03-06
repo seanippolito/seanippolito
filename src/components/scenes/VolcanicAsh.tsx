@@ -11,7 +11,8 @@ interface AshParticle {
   fallSpeed: number
 }
 
-const ASH_COUNT = 60
+const isMobile = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
+const ASH_COUNT = isMobile ? 20 : 60
 
 function spawnAsh(randomY = false): AshParticle {
   const size = 2 + Math.random() * 5

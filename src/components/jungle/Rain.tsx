@@ -44,6 +44,7 @@ export function Rain({ active, phase }: RainProps) {
   const dropsRef = useRef<Drop[]>([])
   const splashesRef = useRef<Splash[]>([])
   const rafRef = useRef(0)
+  const lastDrawTimeRef = useRef(0)
   const [visible, setVisible] = useState(false)
   const [fading, setFading] = useState(false)
   const phaseRef = useRef(phase)
@@ -80,12 +81,21 @@ export function Rain({ active, phase }: RainProps) {
     window.addEventListener("resize", resize)
 
     const angle = Math.tan(8 * Math.PI / 180)
+    const mobile = window.matchMedia("(pointer: coarse)").matches
+    const scale = mobile ? 0.3 : 1
 
-    const animate = () => {
+    const animate = (timestamp: number) => {
+      // Throttle to ~30fps on mobile
+      if (mobile && timestamp - lastDrawTimeRef.current < 33) {
+        rafRef.current = requestAnimationFrame(animate)
+        return
+      }
+      lastDrawTimeRef.current = timestamp
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       const currentPhase = phaseRef.current
-      const targetCount = TARGET_COUNTS[currentPhase]
+      const targetCount = Math.floor(TARGET_COUNTS[currentPhase] * scale)
       const targetOpacity = TARGET_OPACITY[currentPhase]
       const drops = dropsRef.current
       const splashes = splashesRef.current
@@ -136,7 +146,7 @@ export function Rain({ active, phase }: RainProps) {
 
         // Hit ground zone — spawn splash and reset
         if (drop.y > groundY + Math.random() * (canvas.height - groundY)) {
-          if (!drop.dying && drop.opacity > 0.1) {
+          if (!mobile && !drop.dying && drop.opacity > 0.1) {
             splashes.push({
               x: drop.x,
               y: drop.y,
