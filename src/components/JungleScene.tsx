@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react"
+import { useIsMobile } from "../hooks/useIsMobile"
 import { useMouseParallax, getLayerTransform } from "../hooks/useMouseParallax"
 import { BackgroundSky } from "./jungle/BackgroundSky"
 import { FarTrees } from "./jungle/FarTrees"
@@ -24,6 +25,7 @@ interface JungleSceneProps {
 }
 
 export function JungleScene({ onRainChange, onMouseXChange }: JungleSceneProps) {
+  const isMobile = useIsMobile()
   const offset = useMouseParallax({ strength: 25, smoothing: 0.06 })
 
   // Rain state
@@ -173,13 +175,15 @@ export function JungleScene({ onRainChange, onMouseXChange }: JungleSceneProps) 
       {/* Cursor companion — lightning bug */}
       <CursorFirefly />
 
-      {/* Layer 10: Flashlight — dark vignette with bright circle following cursor */}
-      <Flashlight />
+      {/* Layer 10: Flashlight — dark vignette with bright circle following cursor (desktop only) */}
+      {!isMobile && <Flashlight />}
 
-      {/* Layer 11: Rain — on top of everything */}
-      <div className="absolute inset-0" style={{ zIndex: 100 }}>
-        <Rain active={rainActive} phase={rainPhase} />
-      </div>
+      {/* Layer 11: Rain — on top of everything (desktop only) */}
+      {!isMobile && (
+        <div className="absolute inset-0" style={{ zIndex: 100 }}>
+          <Rain active={rainActive} phase={rainPhase} />
+        </div>
+      )}
     </div>
   )
 }

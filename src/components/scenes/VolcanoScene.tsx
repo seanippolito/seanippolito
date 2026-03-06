@@ -1,4 +1,5 @@
 import { memo, useEffect, useRef } from "react"
+import { useIsMobile } from "../../hooks/useIsMobile"
 import { useMouseParallax, getLayerTransform } from "../../hooks/useMouseParallax"
 import { EmberTrail } from "./EmberTrail"
 import { HeatHaze } from "./HeatHaze"
@@ -22,6 +23,7 @@ interface VolcanoSceneProps {
 }
 
 export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: VolcanoSceneProps) {
+  const isMobile = useIsMobile()
   const offset = useMouseParallax({ strength: 25, smoothing: 0.06 })
 
   // Report mouse X for audio panning
@@ -529,8 +531,8 @@ export const VolcanoScene = memo(function VolcanoScene({ onMouseXChange }: Volca
       {/* Smoke plume billowing from peak */}
       <SmokePlume />
 
-      {/* Boulders erupting from volcano peak */}
-      <VolcanoBoulders />
+      {/* Boulders erupting from volcano peak (desktop only) */}
+      {!isMobile && <VolcanoBoulders />}
 
       {/* Volcanic lightning near eruption plume */}
       <VolcanoLightning />

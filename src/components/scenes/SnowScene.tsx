@@ -1,4 +1,5 @@
 import { memo, useEffect } from "react"
+import { useIsMobile } from "../../hooks/useIsMobile"
 import { useMouseParallax, getLayerTransform } from "../../hooks/useMouseParallax"
 import { useWindCycle } from "../../hooks/useWindCycle"
 import { FallingSnow } from "./FallingSnow"
@@ -22,6 +23,7 @@ interface SnowSceneProps {
 }
 
 export const SnowScene = memo(function SnowScene(_props: SnowSceneProps) {
+  const isMobile = useIsMobile()
   const offset = useMouseParallax({ strength: 25, smoothing: 0.06 })
   const windIntensity = useWindCycle()
 
@@ -470,7 +472,7 @@ export const SnowScene = memo(function SnowScene(_props: SnowSceneProps) {
       {/* Animated overlay components */}
       <SwayingPines windIntensity={windIntensity} offset={offset} />
       <AuroraBorealis />
-      <FallingSnow windIntensity={windIntensity} />
+      {!isMobile && <FallingSnow windIntensity={windIntensity} />}
       <BlizzardGusts windIntensity={windIntensity} />
       <BreathMist />
       <WolfPack />
