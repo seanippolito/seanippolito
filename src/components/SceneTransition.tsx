@@ -1,10 +1,11 @@
-import { useRef, useEffect, useCallback, memo } from "react"
+import { useRef, useEffect, useCallback, memo, lazy, Suspense } from "react"
 import type { SceneName, Direction } from "../data/scenes"
-import { JungleScene } from "./JungleScene"
-import { HeavenScene } from "./scenes/HeavenScene"
-import { BeachScene } from "./scenes/BeachScene"
-import { VolcanoScene } from "./scenes/VolcanoScene"
-import { SnowScene } from "./scenes/SnowScene"
+
+const JungleScene = lazy(() => import("./JungleScene").then(m => ({ default: m.JungleScene })))
+const HeavenScene = lazy(() => import("./scenes/HeavenScene").then(m => ({ default: m.HeavenScene })))
+const BeachScene = lazy(() => import("./scenes/BeachScene").then(m => ({ default: m.BeachScene })))
+const VolcanoScene = lazy(() => import("./scenes/VolcanoScene").then(m => ({ default: m.VolcanoScene })))
+const SnowScene = lazy(() => import("./scenes/SnowScene").then(m => ({ default: m.SnowScene })))
 
 interface SceneTransitionProps {
   currentScene: SceneName
@@ -186,7 +187,9 @@ export const SceneTransition = memo(function SceneTransition({
           inset: 0,
         }}
       >
-        {renderScene(currentScene, sceneProps(currentScene))}
+        <Suspense fallback={<div />}>
+          {renderScene(currentScene, sceneProps(currentScene))}
+        </Suspense>
       </div>
 
       {/* Incoming scene — mounted when targetScene is set */}
@@ -199,7 +202,9 @@ export const SceneTransition = memo(function SceneTransition({
             inset: 0,
           }}
         >
-          {renderScene(targetScene, sceneProps(targetScene))}
+          <Suspense fallback={<div />}>
+            {renderScene(targetScene, sceneProps(targetScene))}
+          </Suspense>
         </div>
       )}
     </div>

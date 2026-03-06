@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, lazy, Suspense } from "react"
 import { CenterContent } from "./components/CenterContent"
 import { NavigationHub } from "./components/NavigationHub"
 import { SceneTransition } from "./components/SceneTransition"
-import { Game } from "./components/Game"
+
+const Game = lazy(() => import("./components/Game").then(m => ({ default: m.Game })))
 import { useAmbientAudio } from "./hooks/useAmbientAudio"
 import { useVolcanoAudio } from "./hooks/useVolcanoAudio"
 import { useHeavenAudio } from "./hooks/useHeavenAudio"
@@ -198,10 +199,12 @@ function App() {
         />
       )}
       {gameActive && (
-        <Game
-          onClose={() => setGameActive(false)}
-          currentScene={currentScene}
-        />
+        <Suspense fallback={<div />}>
+          <Game
+            onClose={() => setGameActive(false)}
+            currentScene={currentScene}
+          />
+        </Suspense>
       )}
     </div>
   )
