@@ -491,7 +491,7 @@ export function CenterContent() {
         Sean Ippolito
       </h1>
       <p className="text-glow mb-10 text-lg text-white/70 md:text-xl">
-        I build elegant software and playful experiences.
+          Veteran. Engineer. Founder. Building what matters.
       </p>
 
       {/* Social links */}

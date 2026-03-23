@@ -22,7 +22,7 @@ export function CenterContent({ audioMuted, onToggleAudio }: CenterContentProps)
           className="text-glow mb-8 text-sm font-light tracking-widest text-white/60 uppercase sm:mb-12 sm:text-base md:text-lg"
           style={{ textShadow: "0 1px 8px rgba(0,0,0,0.5)" }}
         >
-          I build elegant software and playful experiences
+          Veteran. Engineer. Founder. Building what matters.
         </p>
 
         {/* Social links */}

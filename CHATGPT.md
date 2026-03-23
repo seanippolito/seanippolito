@@ -204,7 +204,7 @@ seanippolito_theme
 
 Content structure (what you’d fill in)
 
-Tagline: “I build elegant software and playful experiences.”
+Tagline: "Veteran. Engineer. Founder. Building what matters.”
 
 3 value bullets: speed, taste, reliability (or whatever is true for you)
 
